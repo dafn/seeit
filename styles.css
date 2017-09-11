@@ -1,0 +1,10 @@
+body {
+    background-color: rgb(33, 37, 43);
+    align-content: center;
+}
+
+#holder {
+    height:100%;
+    background-color: red;
+    align-content: center;
+}

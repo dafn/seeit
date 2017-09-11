@@ -1,23 +1,40 @@
-<!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="styles.css">
     <title>Hello World!</title>
 </head>
 
 <body>
-    <h1>Hello World!</h1>
-    We are using node
+    <div id="holder" />
+
+
     <script>
-        document.write(process.versions.node)
-    </script>, Chrome
-    <script>
-        document.write(process.versions.chrome)
-    </script>, and Electron
-    <script>
-        document.write(process.versions.electron)
-    </script>.
+        document.ondragover = e => e.preventDefault();
+        document.ondrop = e => {
+            e.preventDefault();
+
+            const holder = document.getElementById('holder');
+
+            const file = e.dataTransfer.files[0],
+                reader = new FileReader();
+
+            if (file.type == 'video/webm') {
+                /*
+                reader.onload = (event) => {
+                    holder.innerHTML = '<video src=' + event.target.result + ' controls />'
+                };
+                reader.readAsDataURL(file);
+                */
+            } else {
+                reader.onload = (event) => {
+                    holder.style.background = 'url(' + event.target.result + ') no-repeat center/contain';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
 </body>
 
 </html>
