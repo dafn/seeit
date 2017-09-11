@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "build": "babel src -d lib"
   },
   "repository": {
     "type": "git",
@@ -24,5 +25,9 @@
   "homepage": "https://github.com/dafn/seeit#readme",
   "dependencies": {
     "electron": "^1.7.6"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "webpack": "^3.5.6"
   }
 }
