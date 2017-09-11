@@ -1,0 +1,28 @@
+{
+  "name": "seeit",
+  "version": "1.0.0",
+  "description": "image viewer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dafn/seeit.git"
+  },
+  "keywords": [
+    "image",
+    "gif",
+    "WebM"
+  ],
+  "author": "Daniel Nilsen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dafn/seeit/issues"
+  },
+  "homepage": "https://github.com/dafn/seeit#readme",
+  "dependencies": {
+    "electron": "^1.7.6"
+  }
+}
