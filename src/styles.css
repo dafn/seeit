@@ -1,10 +1,12 @@
 body {
     background-color: rgb(33, 37, 43);
     align-content: center;
+    overflow: hidden;
 }
 
 #holder {
     height:100%;
-    background-color: red;
-    align-content: center;
+    width: 100%;
+    margin: auto;
+    background: no-repeat center/contain;
 }

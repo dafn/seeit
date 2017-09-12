@@ -8,32 +8,8 @@
 
 <body>
     <div id="holder" />
-
-    <script>
-        document.ondragover = e => e.preventDefault();
-        document.ondrop = e => {
-            e.preventDefault();
-
-            const holder = document.getElementById('holder');
-
-            const file = e.dataTransfer.files[0],
-                reader = new FileReader();
-
-            if (file.type == 'video/webm') {
-                /*
-                reader.onload = (event) => {
-                    holder.innerHTML = '<video src=' + event.target.result + ' controls />'
-                };
-                reader.readAsDataURL(file);
-                */
-            } else {
-                reader.onload = (event) => {
-                    holder.style.background = 'url(' + event.target.result + ') no-repeat center/contain';
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-    </script>
 </body>
+
+<script src="./index.js"></script>
 
 </html>
