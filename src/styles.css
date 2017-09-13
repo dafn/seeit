@@ -5,25 +5,26 @@ body {
     height: 100vh;
 }
 
+video {
+	height:90%;
+    width: 90%;
+	object-fit: contain;
+	opacity: 0;
+    margin: auto;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+	transform: translate(-50%, -50%);
+	z-index: -1;
+}
+
 #id {
-    height:90%;
+	height:90%;
     width: 90%;
     object-fit: contain;
     margin: auto;
-    position: absolute;
+    position: relative;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
 }
-
-#holder {
-    height:90%;
-    width: 90%;
-    margin: auto;
-    background: no-repeat center/contain;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-}
-

@@ -1,6 +1,9 @@
 document.ondragover = e => e.preventDefault();
 document.ondrop = e => e.preventDefault();
 
+document.onmousedown = startDrag;
+document.onmouseup = () => { drag = false; }
+
 var imageTypes = ['.jpg', '.png', '.jpeg', '.gif', '.webm', '.mp4'],
 	file;
 
@@ -8,7 +11,6 @@ const args = require('electron').remote.process.argv,
 	path = require('path'),
 	holder = document.getElementById('holder'),
 	fs = require('fs');
-
 
 fs.readdir(args[2], (err, content) => {
 
@@ -60,15 +62,19 @@ fs.readdir(args[2], (err, content) => {
 showVideo = path => {
 	document.getElementsByTagName('title')[0].innerText = file;
 	document.getElementsByTagName('video')[0].src = path;
+
 	document.getElementsByTagName('img')[0].style.opacity = '0';
 	document.getElementsByTagName('video')[0].style.opacity = '1';
 }
 
 showImage = path => {
 	document.getElementsByTagName('title')[0].innerText = file;
-	document.getElementsByTagName('img')[0].src = path;
+	document.getElementsByTagName('img')[0].src = "";
+
 	document.getElementsByTagName('video')[0].style.opacity = '0';
 	document.getElementsByTagName('img')[0].style.opacity = '1';
+
+	document.getElementsByTagName('img')[0].src = path;
 }
 
 iterator = array => {
@@ -104,6 +110,28 @@ zoom = value => {
 			size = value;
 			document.getElementById('id').style.height = `${size}%`;
 			document.getElementById('id').style.width = `${size}%`;
+
+			document.getElementById('id').style.top = '50%';
+			document.getElementById('id').style.left = '50%';
 		}
 	}
+}
+
+function startDrag(e) {
+	e.preventDefault();
+
+	targ = e.target;
+
+	coordX = parseInt(targ.style.left);
+	coordY = parseInt(targ.style.top);
+	drag = true;
+
+	document.onmousemove = dragDiv;
+}
+
+dragDiv = e => {
+	if (!drag) { return };
+
+	targ.style.left = e.clientX + 'px';
+	targ.style.top = e.clientY + 'px';
 }
