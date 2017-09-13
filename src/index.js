@@ -1,31 +1,24 @@
-document.ondragover = e => e.preventDefault();
-document.ondrop = e => e.preventDefault();
-
-document.onmousedown = startDrag;
-document.onmouseup = () => { drag = false; }
-
-var imageTypes = ['.jpg', '.png', '.jpeg', '.gif', '.webm', '.mp4'],
-	file;
-
-const args = require('electron').remote.process.argv,
+const arg = require('electron').remote.process.argv[2],
 	path = require('path'),
-	holder = document.getElementById('holder'),
-	fs = require('fs');
+	fs = require('fs'),
+	helper = require('./help');
 
-fs.readdir(args[2], (err, content) => {
+var imageTypes = ['.jpg', '.png', '.jpeg', '.gif', '.webm', '.mp4'];
 
-	files = iterator(content);
-	zoom = zoom(90);
+fs.readdir(path.dirname(arg), (err, content) => {
 
-	do { file = files.next(); }
-	while (imageTypes.indexOf(path.extname(file)) === -1);
+	let file = path.basename(arg);
+
+	const files = helper.iterator(content, content.indexOf(file)),
+		dirname = path.dirname(arg) + '/',
+		zoom = helper.zoom(90);
 
 	document.getElementsByTagName('title')[0].innerText = file;
 
 	if (path.extname(file) === '.webm' || path.extname(file) === '.mp4') {
-		showVideo(`${args[2]}${file}`);
+		helper.showVideo(`${dirname}${file}`, file);
 	} else {
-		showImage(`${args[2]}${file}`);
+		helper.showImage(`${dirname}${file}`, file);
 	}
 
 	document.onkeydown = event => {
@@ -34,9 +27,9 @@ fs.readdir(args[2], (err, content) => {
 			while (imageTypes.indexOf(path.extname(file)) === -1);
 
 			if (path.extname(file) === '.webm' || path.extname(file) === '.mp4') {
-				showVideo(`${args[2]}${file}`);
+				helper.showVideo(`${dirname}${file}`, file);
 			} else {
-				showImage(`${args[2]}${file}`);
+				helper.showImage(`${dirname}${file}`, file);
 			}
 
 			zoom.reset();
@@ -46,9 +39,9 @@ fs.readdir(args[2], (err, content) => {
 			while (imageTypes.indexOf(path.extname(file)) === -1);
 
 			if (path.extname(file) === '.webm' || path.extname(file) === '.mp4') {
-				showVideo(`${args[2]}${file}`);
+				helper.showVideo(`${dirname}${file}`, file);
 			} else {
-				showImage(`${args[2]}${file}`);
+				helper.showImage(`${dirname}${file}`, file);
 			}
 
 			zoom.reset();
@@ -59,84 +52,24 @@ fs.readdir(args[2], (err, content) => {
 	}
 });
 
-showVideo = path => {
-	document.getElementsByTagName('title')[0].innerText = file;
-	document.getElementsByTagName('video')[0].src = path;
+document.onmousedown = (e) => {
+	e.preventDefault();
 
-	document.getElementsByTagName('img')[0].style.visibility = 'hidden';
-	document.getElementsByTagName('video')[0].style.zIndex = '1';
-	document.getElementsByTagName('video')[0].style.opacity = '1';
-}
+	target = e.target;
 
-showImage = path => {
-	document.getElementsByTagName('title')[0].innerText = file;
-	document.getElementsByTagName('img')[0].src = "";
+	coordX = parseInt(target.style.left);
+	coordY = parseInt(target.style.top);
+	drag = true;
 
-	document.getElementsByTagName('video')[0].style.opacity = '0';
-	document.getElementsByTagName('video')[0].style.zIndex = '-1';
-	document.getElementsByTagName('img')[0].style.visibility = 'visible';
+	document.onmousemove = e => {
+		if (!drag) { return };
 
-	document.getElementsByTagName('img')[0].src = path;
-}
-
-iterator = array => {
-	let nextIndex = 0;
-
-	return {
-		next: () => {
-			nextIndex++;
-			return (nextIndex < array.length) ? array[nextIndex] : array[nextIndex = 0]
-		},
-		prev: () => {
-			nextIndex--;
-			return (nextIndex >= 0) ? array[nextIndex] : array[nextIndex = array.length - 1]
-		}
+		target.style.left = e.clientX + 'px';
+		target.style.top = e.clientY + 'px';
 	};
 }
 
-zoom = value => {
-	let size = value;
+document.onmouseup = () => drag = false;
 
-	return {
-		up: () => {
-			size += 10;
-			document.getElementById('id').style.height = `${size}%`;
-			document.getElementById('id').style.width = `${size}%`;
-		},
-		down: () => {
-			size -= 10;
-			document.getElementById('id').style.height = `${size}%`;
-			document.getElementById('id').style.width = `${size}%`;
-		},
-		reset: () => {
-			size = value;
-			document.getElementById('id').style.height = `${size}%`;
-			document.getElementById('id').style.width = `${size}%`;
-
-			document.getElementById('id').style.top = '50%';
-			document.getElementById('id').style.left = '50%';
-			
-			document.getElementsByTagName('video')[0].style.top = '50%';
-			document.getElementsByTagName('video')[0].style.left = '50%';
-		}
-	}
-}
-
-function startDrag(e) {
-	e.preventDefault();
-
-	targ = e.target;
-
-	coordX = parseInt(targ.style.left);
-	coordY = parseInt(targ.style.top);
-	drag = true;
-
-	document.onmousemove = dragDiv;
-}
-
-dragDiv = e => {
-	if (!drag) { return };
-
-	targ.style.left = e.clientX + 'px';
-	targ.style.top = e.clientY + 'px';
-}
+document.ondragover = e => e.preventDefault();
+document.ondrop = e => e.preventDefault();

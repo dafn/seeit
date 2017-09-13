@@ -1,3 +1,11 @@
 # Dependency directories
 node_modules/
 lib/
+
+# Build directories
+dist/
+build/
+
+# Config files
+.yarnclean
+yarn.*
