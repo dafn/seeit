@@ -2,7 +2,7 @@ body {
     background-color: rgb(33, 37, 43);
     align-content: center;
     overflow: hidden;
-    height: 100vh;
+	height: 100vh;
 }
 
 video {
@@ -23,8 +23,9 @@ video {
     width: 90%;
     object-fit: contain;
     margin: auto;
-    position: relative;
+	position: relative;
 	left: 50%;
-    top: 50%;
+	top: 50%;
+	z-index: 1;
 	transform: translate(-50%, -50%);
 }

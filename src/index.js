@@ -1,4 +1,4 @@
-const arg = require('electron').remote.process.argv[2],
+const arg = require('electron').remote.process.argv[1],
 	path = require('path'),
 	fs = require('fs'),
 	helper = require('./help');
