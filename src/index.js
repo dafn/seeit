@@ -45,8 +45,24 @@ fs.readdir(path.dirname(arg), (err, content) => {
 			}
 
 			zoom.reset();
+
+		} else if (event.code === 'Delete') {
+			files.remove(`${dirname}${file}`);
+
+			do { file = files.next(); }
+			while (imageTypes.indexOf(path.extname(file)) === -1);
+
+			if (path.extname(file) === '.webm' || path.extname(file) === '.mp4') {
+				helper.showVideo(`${dirname}${file}`, file);
+			} else {
+				helper.showImage(`${dirname}${file}`, file);
+			}
+
+			zoom.reset();
+
 		}
 	}
+
 	document.onmousewheel = event => {
 		(event.wheelDelta > 0) ? zoom.up() : zoom.down();
 	}

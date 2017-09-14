@@ -37,6 +37,10 @@ exports.iterator = (array, index) => {
 		prev: () => {
 			nextIndex--;
 			return (nextIndex >= 0) ? array[nextIndex] : array[nextIndex = array.length - 1]
+		},
+		remove: file => {
+			fs.unlinkSync(file);
+			array.splice(nextIndex, 1)
 		}
 	};
 }
@@ -58,6 +62,4 @@ exports.showImage = (path, filename) => {
 	document.getElementsByTagName('video')[0].style.zIndex = '-1';
 	document.getElementsByTagName('video')[0].style.visibility = 'hidden';
 	document.getElementsByTagName('img')[0].style.visibility = 'visible';
-
-	
 }

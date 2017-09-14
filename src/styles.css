@@ -9,8 +9,8 @@ video {
 	height:90%;
     width: 90%;
 	object-fit: contain;
-	opacity: 0;
-    margin: auto;
+	margin: auto;
+	visibility: hidden;
     position: absolute;
     left: 50%;
     top: 50%;
