@@ -11,7 +11,7 @@ fs.readdir(path.dirname(arg), (err, content) => {
 
 	const files = helper.iterator(content, content.indexOf(file)),
 		dirname = path.dirname(arg) + '/',
-		zoom = helper.zoom(90);
+		zoom = helper.zoom(95);
 
 	document.getElementsByTagName('title')[0].innerText = file;
 
@@ -62,26 +62,43 @@ fs.readdir(path.dirname(arg), (err, content) => {
 
 		}
 	}
-
 	document.onmousewheel = event => {
 		(event.wheelDelta > 0) ? zoom.up() : zoom.down();
 	}
 });
 
-let drag = false;
 document.onmousedown = e => {
 	e.preventDefault();
-	e.target.nodeName === 'IMG' ? drag = true : null;	
+
+	if (e.target.nodeName !== 'IMG') { return }
+
+	let targ = e.target;
+	let drag = false;
+
+	if (!targ.style.left) {
+		targ.style.left = '0px';
+		targ.style.top = '0px';
+		targ.style.transform = 'translate(0, 0)';
+	};
+	
+	let coordX = parseInt(targ.style.left);
+	let coordY = parseInt(targ.style.top);
+
+	let offsetX = e.clientX;
+	let offsetY = e.clientY;
+
+	drag = true;
+
+	document.onmousemove = e => {
+		if (!drag) { return };
+
+		document.getElementById('image').style.left = (coordX + e.clientX - offsetX) + 'px';
+		document.getElementById('image').style.top = (coordY + e.clientY - offsetY) + 'px';
+		document.getElementById('image').style.transform = 'translate(0, 0)';
+	}
+
+	document.onmouseup = () => drag = false;
 }
-
-document.onmousemove = e => {
-	if (!drag) { return };
-
-	document.getElementById('image').style.left = e.clientX + 'px';
-	document.getElementById('image').style.top = e.clientY + 'px';
-};
-
-document.onmouseup = () => drag = false;
 
 document.ondragover = e => e.preventDefault();
 document.ondrop = e => e.preventDefault();

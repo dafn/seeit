@@ -19,9 +19,13 @@ exports.zoom = value => {
 
 			document.getElementById('image').style.top = '50%';
 			document.getElementById('image').style.left = '50%';
+			document.getElementById('image').style.transform = 'translate(-50%, -50%)';
 
 			document.getElementsByTagName('video')[0].style.top = '50%';
 			document.getElementsByTagName('video')[0].style.left = '50%';
+
+
+
 		}
 	}
 }
