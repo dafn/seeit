@@ -4,21 +4,21 @@ exports.zoom = value => {
 	return {
 		up: () => {
 			size += 10;
-			document.getElementById('id').style.height = `${size}%`;
-			document.getElementById('id').style.width = `${size}%`;
+			document.getElementById('image').style.height = `${size}%`;
+			document.getElementById('image').style.width = `${size}%`;
 		},
 		down: () => {
 			size -= 10;
-			document.getElementById('id').style.height = `${size}%`;
-			document.getElementById('id').style.width = `${size}%`;
+			document.getElementById('image').style.height = `${size}%`;
+			document.getElementById('image').style.width = `${size}%`;
 		},
 		reset: () => {
 			size = value;
-			document.getElementById('id').style.height = `${size}%`;
-			document.getElementById('id').style.width = `${size}%`;
+			document.getElementById('image').style.height = `${size}%`;
+			document.getElementById('image').style.width = `${size}%`;
 
-			document.getElementById('id').style.top = '50%';
-			document.getElementById('id').style.left = '50%';
+			document.getElementById('image').style.top = '50%';
+			document.getElementById('image').style.left = '50%';
 
 			document.getElementsByTagName('video')[0].style.top = '50%';
 			document.getElementsByTagName('video')[0].style.left = '50%';

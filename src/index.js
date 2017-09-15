@@ -1,4 +1,4 @@
-const arg = require('electron').remote.process.argv[1],
+const arg = require('electron').remote.process.argv[2],
 	path = require('path'),
 	fs = require('fs'),
 	helper = require('./help');
@@ -68,22 +68,18 @@ fs.readdir(path.dirname(arg), (err, content) => {
 	}
 });
 
-document.onmousedown = (e) => {
+let drag = false;
+document.onmousedown = e => {
 	e.preventDefault();
-
-	target = e.target;
-
-	coordX = parseInt(target.style.left);
-	coordY = parseInt(target.style.top);
-	drag = true;
-
-	document.onmousemove = e => {
-		if (!drag) { return };
-
-		target.style.left = e.clientX + 'px';
-		target.style.top = e.clientY + 'px';
-	};
+	e.target.nodeName === 'IMG' ? drag = true : null;	
 }
+
+document.onmousemove = e => {
+	if (!drag) { return };
+
+	document.getElementById('image').style.left = e.clientX + 'px';
+	document.getElementById('image').style.top = e.clientY + 'px';
+};
 
 document.onmouseup = () => drag = false;
 

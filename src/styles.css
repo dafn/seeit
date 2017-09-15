@@ -1,5 +1,5 @@
 body {
-    background-color: rgb(33, 37, 43);
+    background-color: rgb(16, 19, 22);
     align-content: center;
     overflow: hidden;
 	height: 100vh;
@@ -18,7 +18,7 @@ video {
 	z-index: -1;
 }
 
-#id {
+#image {
 	height:90%;
     width: 90%;
     object-fit: contain;
@@ -28,4 +28,15 @@ video {
 	top: 50%;
 	z-index: 1;
 	transform: translate(-50%, -50%);
+}
+
+#titlebar {
+	height:22px;
+    width: 100%;
+	margin: 0;
+	left: 0;
+	top: 0;
+    position: absolute;
+	z-index: 2;
+	-webkit-app-region: drag;
 }
