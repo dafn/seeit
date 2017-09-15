@@ -5,6 +5,10 @@ const arg = require('electron').remote.process.argv[2],
 
 var imageTypes = ['.jpg', '.png', '.jpeg', '.gif', '.webm', '.mp4'];
 
+$(function () {
+	$("#image").draggable();
+});
+
 fs.readdir(path.dirname(arg), (err, content) => {
 
 	let file = path.basename(arg);
@@ -67,38 +71,22 @@ fs.readdir(path.dirname(arg), (err, content) => {
 	}
 });
 
+/*
+let drag = false;
 document.onmousedown = e => {
 	e.preventDefault();
-
-	if (e.target.nodeName !== 'IMG') { return }
-
-	let targ = e.target;
-	let drag = false;
-
-	if (!targ.style.left) {
-		targ.style.left = '0px';
-		targ.style.top = '0px';
-		targ.style.transform = 'translate(0, 0)';
-	};
-	
-	let coordX = parseInt(targ.style.left);
-	let coordY = parseInt(targ.style.top);
-
-	let offsetX = e.clientX;
-	let offsetY = e.clientY;
-
-	drag = true;
-
-	document.onmousemove = e => {
-		if (!drag) { return };
-
-		document.getElementById('image').style.left = (coordX + e.clientX - offsetX) + 'px';
-		document.getElementById('image').style.top = (coordY + e.clientY - offsetY) + 'px';
-		document.getElementById('image').style.transform = 'translate(0, 0)';
-	}
-
-	document.onmouseup = () => drag = false;
+	e.target.nodeName === 'IMG' ? drag = true : null;
 }
+
+document.onmousemove = e => {
+	if (!drag) { return };
+
+	document.getElementById('image').style.left = e.clientX + 'px';
+	document.getElementById('image').style.top = e.clientY + 'px';
+};
+
+document.onmouseup = () => drag = false;
+*/
 
 document.ondragover = e => e.preventDefault();
 document.ondrop = e => e.preventDefault();
