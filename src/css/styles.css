@@ -6,8 +6,8 @@ body {
 }
 
 video {
-	height:95%;
-    width: 95%;
+	max-height:95%;
+    max-width: 95%;
 	object-fit: contain;
 	margin: auto;
 	visibility: hidden;
@@ -19,8 +19,8 @@ video {
 }
 
 #image {
-	height:95%;
-    width: 95%;
+	height:50%;
+    width: 50%;
     object-fit: contain;
     margin: auto;
 	position: relative;

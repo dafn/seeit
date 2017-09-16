@@ -1,27 +1,32 @@
 exports.zoom = value => {
-	let size = value;
+	let size = value,
+		img = document.getElementById('image'),
+		vid = document.getElementsByTagName('video')[0];
 
 	return {
+		size: (size) => {
+			this.size = size;
+		},
 		up: () => {
 			size += 5;
-			document.getElementById('image').style.height = `${size}%`;
-			document.getElementById('image').style.width = `${size}%`;
+			img.style.height = `${size}%`;
+			img.style.width = `${size}%`;
 		},
 		down: () => {
 			size -= 5;
-			document.getElementById('image').style.height = `${size}%`;
-			document.getElementById('image').style.width = `${size}%`;
+			img.style.height = `${size}%`;
+			img.style.width = `${size}%`;
 		},
 		reset: () => {
 			size = value;
-			document.getElementById('image').style.height = `${size}%`;
-			document.getElementById('image').style.width = `${size}%`;
+			img.style.height = `${size}%`;
+			img.style.width = `${size}%`;
 
-			document.getElementById('image').style.top = '50%';
-			document.getElementById('image').style.left = '50%';
+			img.style.top = '50%';
+			img.style.left = '50%';
 
-			document.getElementsByTagName('video')[0].style.top = '50%';
-			document.getElementsByTagName('video')[0].style.left = '50%';
+			vid.style.top = '50%';
+			vid.style.left = '50%';
 		}
 	}
 }
@@ -47,21 +52,29 @@ exports.iterator = (array, index) => {
 
 exports.showVideo = (path, filename) => {
 	document.getElementsByTagName('title')[0].innerText = filename;
-	document.getElementsByTagName('video')[0].src = path;
 
-	document.getElementsByTagName('img')[0].style.visibility = 'hidden';
-	document.getElementsByTagName('video')[0].style.visibility = 'visible';
-	document.getElementsByTagName('video')[0].style.zIndex = '1';
+	let img = document.getElementById('image');
+	let vid = document.getElementsByTagName('video')[0];
+
+	vid.src = path;
+
+	img.style.visibility = 'hidden';
+	vid.style.visibility = 'visible';
+	vid.style.zIndex = '1';
 }
 
 exports.showImage = (path, filename) => {
 	document.getElementsByTagName('title')[0].innerText = filename;
-	document.getElementsByTagName('img')[0].src = ""; // removes flickering when switching image after drag
-	document.getElementsByTagName('img')[0].src = path;
 
-	document.getElementsByTagName('video')[0].style.zIndex = '-1';
-	document.getElementsByTagName('video')[0].style.visibility = 'hidden';
-	document.getElementsByTagName('img')[0].style.visibility = 'visible';
+	let img = document.getElementById('image');
+	let vid = document.getElementsByTagName('video')[0];
+
+	img.src = ""; // removes flickering when switching image after drag
+	img.src = path;
+
+	vid.style.zIndex = '-1';
+	vid.style.visibility = 'hidden';
+	img.style.visibility = 'visible';
 }
 
 exports.next = (files, imageTypes, path, dirname, zoom) => {
@@ -73,7 +86,6 @@ exports.next = (files, imageTypes, path, dirname, zoom) => {
 	} else {
 		exports.showImage(`${dirname}${file}`, file);
 	}
-	console.log('next(): ', file)
 
 	zoom.reset();
 	return file;
