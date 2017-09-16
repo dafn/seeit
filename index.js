@@ -8,7 +8,7 @@ function createWindow() {
     win = new BrowserWindow({ width: 800, height: 600, autoHideMenuBar: true, titleBarStyle: 'hidden', darkTheme: true, backgroundColor: '#21252B'})
 
     win.loadURL(url.format({
-        pathname: path.join(__dirname, './src/index.html'),
+        pathname: path.join(__dirname, './src/view/index.html'),
         protocol: 'file:',
         slashes: true
     }))
