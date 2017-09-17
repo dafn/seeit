@@ -37,7 +37,8 @@ if (arg) {
 				case 'ArrowDown':
 					zoom.down();
 					break;
-				case 'Delete' || 'Backspace':
+				case 'Backspace':
+				case 'Delete':
 					files.remove(`${dirname}${file}`);
 					file = helper.next(files, imageTypes, path, dirname, zoom);
 					break;
