@@ -23,17 +23,20 @@ if (arg) {
 		}
 
 		document.onkeydown = event => {
-			console.log(event.code);
 			switch (event.code) {
+				case 'KeyD':
 				case 'ArrowRight':
 					file = helper.next(files, imageTypes, path, dirname, zoom);
 					break;
+				case 'KeyA':
 				case 'ArrowLeft':
 					file = helper.prev(files, imageTypes, path, dirname, zoom);
 					break;
+				case 'KeyW':
 				case 'ArrowUp':
 					zoom.up();
 					break;
+				case 'KeyS':
 				case 'ArrowDown':
 					zoom.down();
 					break;
