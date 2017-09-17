@@ -6,7 +6,8 @@
 	"build": {
 		"appId": "seeit",
 		"mac": {
-			"category": "utility"
+			"category": "utility",
+			"icon": "icon.icns"
 		}
 	},
 	"win": {

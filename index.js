@@ -16,13 +16,13 @@ function createWindow() {
     win.on('closed', () => {
         win = null
     })
+
+    win.webContents.openDevTools();
 }
 
 app.on('ready', createWindow)
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit()
-    }
+    app.quit();
 })
 
 app.on('activate', () => {
@@ -30,4 +30,6 @@ app.on('activate', () => {
         createWindow()
     }
 })
+
+global.sharedObject = {prop1: process.argv}
 
