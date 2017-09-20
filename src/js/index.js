@@ -1,4 +1,4 @@
-const arg = require('electron').remote.process.argv[2],
+const arg = require('electron').remote.process.argv[1],
 	path = require('path'),
 	fs = require('fs'),
 	helper = require('../js/help');
@@ -7,6 +7,8 @@ const imageTypes = ['.jpg', '.png', '.jpeg', '.gif', '.webm', '.mp4'];
 
 if (arg) {
 	fs.readdir(path.dirname(arg), (err, content) => {
+
+		TODO: 'Sort files by folder sort'
 
 		var file = path.basename(arg);
 
@@ -54,9 +56,13 @@ if (arg) {
 			e.preventDefault();
 			(e.wheelDelta > 0) ? zoom.up() : zoom.down();
 		}
+
+		window.onresize = e => {
+			TODO: 'center image on rezise'
+		}
 	});
 } else {
-	// TODO: What if no file is given?
+	TODO: 'What if no file is given?'
 }
 
 $(function () {
