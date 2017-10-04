@@ -5,7 +5,8 @@ const url = require('url')
 let win
 
 function createWindow() {
-    win = new BrowserWindow({ width: 800, height: 600, autoHideMenuBar: true, titleBarStyle: 'hidden', darkTheme: true, backgroundColor: '#21252B'})
+
+    win = new BrowserWindow({ width: 900, height: 1200, autoHideMenuBar: true, titleBarStyle: 'hidden', darkTheme: true, backgroundColor: '#21252B'})
 
     win.loadURL(url.format({
         pathname: path.join(__dirname, './src/view/index.html'),
@@ -30,6 +31,4 @@ app.on('activate', () => {
         createWindow()
     }
 })
-
-global.sharedObject = {prop1: process.argv}
 

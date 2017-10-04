@@ -1,4 +1,4 @@
-const arg = require('electron').remote.process.argv[1],
+const arg = require('electron').remote.process.argv[2],
 	path = require('path'),
 	fs = require('fs'),
 	helper = require('../js/help');
@@ -14,7 +14,7 @@ if (arg) {
 
 		const files = helper.iterator(content, content.indexOf(file)),
 			dirname = path.dirname(arg) + '/',
-			zoom = helper.zoom(50);
+			zoom = helper.zoom(100);
 
 		document.getElementsByTagName('title')[0].innerText = file;
 

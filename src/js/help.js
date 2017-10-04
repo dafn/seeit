@@ -1,7 +1,11 @@
+let win = require('electron').remote.getCurrentWindow(),
+	img = document.getElementById('image'),
+	vid = document.getElementsByTagName('video')[0];
+
 exports.zoom = value => {
-	let size = value,
-		img = document.getElementById('image'),
-		vid = document.getElementsByTagName('video')[0];
+	let size = value;
+
+	img, vid;
 
 	return {
 		size: (size) => {
@@ -53,8 +57,7 @@ exports.iterator = (array, index) => {
 exports.showVideo = (path, filename) => {
 	document.getElementsByTagName('title')[0].innerText = filename;
 
-	let img = document.getElementById('image');
-	let vid = document.getElementsByTagName('video')[0];
+	img, vid;
 
 	vid.src = path;
 
@@ -66,11 +69,16 @@ exports.showVideo = (path, filename) => {
 exports.showImage = (path, filename) => {
 	document.getElementsByTagName('title')[0].innerText = filename;
 
-	let img = document.getElementById('image');
-	let vid = document.getElementsByTagName('video')[0];
+	img, vid;
 
 	img.src = ""; // removes flickering when switching image after drag
 	img.src = path;
+
+	img.onload = () => {
+		if (!win.isFullScreen() && !win.isMaximized()) {
+			win.setSize(img.naturalWidth, img.naturalHeight)
+		}
+	}
 
 	vid.style.zIndex = '-1';
 	vid.style.visibility = 'hidden';
