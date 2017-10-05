@@ -1,4 +1,5 @@
-const arg = require('electron').remote.process.argv[2],
+const { index } = require('../js/constants'),
+	arg = require('electron').remote.process.argv[index],
 	win = require('electron').remote.getCurrentWindow(),
 	path = require('path'),
 	fs = require('fs'),
@@ -68,6 +69,7 @@ if (arg) {
 		}
 	});
 } else {
+	win.show();
 	TODO: 'What if no file is given?'
 }
 

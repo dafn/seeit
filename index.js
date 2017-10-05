@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require('electron'),
+	{ index } = require('./src/js/constants'),
 	path = require('path'),
 	url = require('url'),
 	sizeOf = require('image-size');
@@ -6,8 +7,8 @@ const { app, BrowserWindow } = require('electron'),
 let win;
 
 createWindow = () => {
-	
-	sizeOf(process.argv[2], (err, dimensions) => {
+
+	sizeOf(process.argv[index], (err, dimensions) => {
 		win = new BrowserWindow({
 			minWidth: 700, minHeight: 800, width: dimensions ? dimensions.width : 700, height: dimensions ? dimensions.height : 800,
 			autoHideMenuBar: true, titleBarStyle: 'hidden', darkTheme: true, backgroundColor: '#21252B', center: true, show: false
@@ -23,7 +24,7 @@ createWindow = () => {
 			win = null;
 		})
 	});
-	
+
 	// win.webContents.openDevTools();
 }
 
