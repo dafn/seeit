@@ -1,14 +1,32 @@
 const arg = require('electron').remote.process.argv[2],
+	win = require('electron').remote.getCurrentWindow(),
 	path = require('path'),
 	fs = require('fs'),
 	helper = require('../js/help');
 
 const imageTypes = ['.jpg', '.png', '.jpeg', '.gif', '.webm', '.mp4'];
 
+/*
+var content = fs.readdirSync(arg)
+	.map(function (v) {
+		return {
+			name: v,
+			time: fs.statSync(dir + v).mtime.getTime()
+		};
+	})
+	.sort(function (a, b) { return a.time - b.time; })
+	.map(function (v) { return v.name; });
+
+	console.log(content);
+*/
+
 if (arg) {
 	fs.readdir(path.dirname(arg), (err, content) => {
 
-		TODO: 'Sort files by folder sort'
+		content.sort((a, b) => {
+			return fs.statSync(path.dirname(arg) + '/' + b).mtime.getTime() -
+				fs.statSync(path.dirname(arg) + '/' + a).mtime.getTime();
+		});
 
 		var file = path.basename(arg);
 
@@ -23,6 +41,8 @@ if (arg) {
 		} else {
 			helper.showImage(`${dirname}${file}`, file);
 		}
+
+		win.show();
 
 		document.onkeydown = event => {
 			switch (event.code) {
@@ -65,7 +85,7 @@ if (arg) {
 	TODO: 'What if no file is given?'
 }
 
-$(function () {
+$(() => {
 	$("#image").draggable();
 });
 

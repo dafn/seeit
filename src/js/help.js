@@ -1,4 +1,4 @@
-let win = require('electron').remote.getCurrentWindow(),
+const win = require('electron').remote.getCurrentWindow(),
 	img = document.getElementById('image'),
 	vid = document.getElementsByTagName('video')[0];
 
@@ -82,6 +82,8 @@ exports.showImage = (path, filename) => {
 
 	vid.style.zIndex = '-1';
 	vid.style.visibility = 'hidden';
+	vid.src = "";
+
 	img.style.visibility = 'visible';
 }
 
