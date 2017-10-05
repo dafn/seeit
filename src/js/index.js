@@ -6,33 +6,19 @@ const arg = require('electron').remote.process.argv[2],
 
 const imageTypes = ['.jpg', '.png', '.jpeg', '.gif', '.webm', '.mp4'];
 
-/*
-var content = fs.readdirSync(arg)
-	.map(function (v) {
-		return {
-			name: v,
-			time: fs.statSync(dir + v).mtime.getTime()
-		};
-	})
-	.sort(function (a, b) { return a.time - b.time; })
-	.map(function (v) { return v.name; });
-
-	console.log(content);
-*/
-
 if (arg) {
 	fs.readdir(path.dirname(arg), (err, content) => {
 
+		const dirname = path.dirname(arg) + '/',
+			zoom = helper.zoom(100);
+
 		content.sort((a, b) => {
-			return fs.statSync(path.dirname(arg) + '/' + b).mtime.getTime() -
-				fs.statSync(path.dirname(arg) + '/' + a).mtime.getTime();
+			return fs.statSync(dirname + '/' + b).mtime.getTime() -
+				fs.statSync(dirname + '/' + a).mtime.getTime();
 		});
 
 		var file = path.basename(arg);
-
-		const files = helper.iterator(content, content.indexOf(file)),
-			dirname = path.dirname(arg) + '/',
-			zoom = helper.zoom(100);
+		const files = helper.iterator(content, content.indexOf(file));
 
 		document.getElementsByTagName('title')[0].innerText = file;
 
