@@ -73,7 +73,7 @@ exports.showImage = (path, filename) => {
 
 	img.src = ""; // removes flickering when switching image after drag
 	img.src = path;
-
+/*
 	img.onload = () => {
 		if (!win.isFullScreen() && !win.isMaximized()) {
 			win.setSize(img.naturalWidth, img.naturalHeight);
@@ -84,7 +84,7 @@ exports.showImage = (path, filename) => {
 			
 		}
 	}
-
+*/
 	vid.style.zIndex = '-1';
 	vid.style.visibility = 'hidden';
 	vid.src = "";
@@ -94,7 +94,7 @@ exports.showImage = (path, filename) => {
 
 exports.next = (files, imageTypes, path, dirname, zoom) => {
 	do { file = files.next(); }
-	while (imageTypes.indexOf(path.extname(file)) === -1);
+	while (imageTypes.indexOf(path.extname(file).toLowerCase()) === -1);
 
 	if (path.extname(file) === '.webm' || path.extname(file) === '.mp4') {
 		exports.showVideo(`${dirname}${file}`, file);
@@ -108,7 +108,7 @@ exports.next = (files, imageTypes, path, dirname, zoom) => {
 
 exports.prev = (files, imageTypes, path, dirname, zoom) => {
 	do { file = files.prev(); }
-	while (imageTypes.indexOf(path.extname(file)) === -1);
+	while (imageTypes.indexOf(path.extname(file).toLowerCase()) === -1);
 
 	if (path.extname(file) === '.webm' || path.extname(file) === '.mp4') {
 		exports.showVideo(`${dirname}${file}`, file);
