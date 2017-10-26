@@ -76,7 +76,12 @@ exports.showImage = (path, filename) => {
 
 	img.onload = () => {
 		if (!win.isFullScreen() && !win.isMaximized()) {
-			win.setSize(img.naturalWidth, img.naturalHeight)
+			win.setSize(img.naturalWidth, img.naturalHeight);
+			win.setPosition(
+				parseInt((window.screen.availWidth-win.getSize()[0])/2),
+				parseInt((window.screen.availHeight-win.getSize()[1])/2)
+			);
+			
 		}
 	}
 

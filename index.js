@@ -7,8 +7,12 @@ const { app, BrowserWindow } = require('electron'),
 let win;
 
 createWindow = () => {
-
-	sizeOf(process.argv[index], (err, dimensions) => {
+	
+	if (process.platform == 'win32') {
+		global.sharedObj = { filepath: process.argv[index], platform: process.platform };
+	}
+	
+	sizeOf(global.sharedObj.filepath, (err, dimensions) => {
 		win = new BrowserWindow({
 			minWidth: 700, minHeight: 800, width: dimensions ? dimensions.width : 700, height: dimensions ? dimensions.height : 800,
 			autoHideMenuBar: true, titleBarStyle: 'hidden', darkTheme: true, backgroundColor: '#21252B', center: true, show: false
@@ -28,7 +32,14 @@ createWindow = () => {
 	// win.webContents.openDevTools();
 }
 
-app.on('ready', createWindow)
+app.on('ready', createWindow);
+app.on('will-finish-launching', function () {
+	app.on('open-file', function (event, path) {
+		event.preventDefault();
+		global.sharedObj = { filepath: path, platform: process.platform };
+	});
+});
+
 app.on('window-all-closed', () => {
 	app.quit();
 })
@@ -38,4 +49,3 @@ app.on('activate', () => {
 		createWindow();
 	}
 })
-

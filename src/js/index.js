@@ -1,13 +1,15 @@
 const { index } = require('../js/constants'),
-	arg = require('electron').remote.process.argv[index],
-	win = require('electron').remote.getCurrentWindow(),
+	remote = require('electron').remote,
+	win = remote.getCurrentWindow(),
 	path = require('path'),
 	fs = require('fs'),
 	helper = require('../js/help');
 
 const imageTypes = ['.jpg', '.png', '.jpeg', '.gif', '.webm', '.mp4'];
+const arg = remote.getGlobal('sharedObj').filepath;
 
-if (arg) {
+if (arg) { 
+
 	fs.readdir(path.dirname(arg), (err, content) => {
 
 		const dirname = path.dirname(arg) + '/',
@@ -29,6 +31,7 @@ if (arg) {
 			helper.showImage(`${dirname}${file}`, file);
 		}
 
+		win.setMaximumSize(window.screen.availWidth, window.screen.availHeight);
 		win.show();
 
 		document.onkeydown = event => {
