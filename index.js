@@ -7,14 +7,14 @@ const { app, BrowserWindow } = require('electron'),
 let win;
 
 createWindow = () => {
-	
+
 	if (process.platform == 'win32') {
 		global.sharedObj = { filepath: process.argv[index], platform: process.platform };
 	}
 
 	sizeOf(global.sharedObj.filepath, (err, dimensions) => {
 		win = new BrowserWindow({
-			minWidth: 100, minHeight: 200, width: dimensions ? dimensions.width : 700, height: dimensions ? dimensions.height : 800,
+			minWidth: 100, minHeight: 200, width: dimensions ? setSize(dimensions).width : 700, height: dimensions ? setSize(dimensions).heigth : 800,
 			autoHideMenuBar: true, titleBarStyle: 'hidden', darkTheme: true, backgroundColor: '#21252B', center: true, show: false
 		})
 
@@ -51,3 +51,15 @@ app.on('activate', () => {
 })
 
 app.releaseSingleInstance();
+
+
+const setSize = dim => (
+	{
+		width: () => {
+			dim.width < 1280 ? dim.width : 1280
+		},
+		heigth: () => {
+			dim.height < 720 ? dim.height : 720
+		}
+	}
+)
