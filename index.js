@@ -1,4 +1,5 @@
-const { app, BrowserWindow } = require('electron'),
+const electron = require('electron'),
+	{ app, BrowserWindow } = electron,
 	{ index } = require('./src/js/constants'),
 	path = require('path'),
 	url = require('url'),
@@ -12,9 +13,18 @@ createWindow = () => {
 		global.sharedObj = { filepath: process.argv[index], platform: process.platform };
 	}
 
+	// global.sharedObj = { filepath: process.argv[index], platform: process.platform };
+
 	sizeOf(global.sharedObj.filepath, (err, dimensions) => {
+
+		const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize,
+			size = getSize({
+				wi: dimensions ? dimensions.width : 700, hi: dimensions ? dimensions.height : 500,
+				ws: width, hs: height
+			});
+
 		win = new BrowserWindow({
-			minWidth: 100, minHeight: 200, width: dimensions ? setSize(dimensions).width : 700, height: dimensions ? setSize(dimensions).heigth : 800,
+			minWidth: 300, minHeight: 400, width: parseInt(size.w), height: parseInt(size.h),
 			autoHideMenuBar: true, titleBarStyle: 'hidden', darkTheme: true, backgroundColor: '#21252B', center: true, show: false
 		})
 
@@ -52,14 +62,12 @@ app.on('activate', () => {
 
 app.releaseSingleInstance();
 
-
-const setSize = dim => (
-	{
-		width: () => {
-			dim.width < 1280 ? dim.width : 1280
-		},
-		heigth: () => {
-			dim.height < 720 ? dim.height : 720
-		}
+const getSize = dim => {
+	if (dim.ws > dim.wi && dim.hs > dim.hi) {
+		return { w: dim.wi, h: dim.hi }
 	}
-)
+
+	return (dim.wi / dim.hi) < (dim.ws / dim.hs) ?
+		{ w: dim.wi * dim.hs / dim.hi, h: dim.hs } :
+		{ w: dim.ws, h: dim.hi * dim.ws / dim.wi }
+}

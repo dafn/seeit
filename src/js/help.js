@@ -73,6 +73,7 @@ exports.showImage = (path, filename) => {
 
 	img.src = ""; // removes flickering when switching image after drag
 	img.src = path;
+
 /*
 	img.onload = () => {
 		if (!win.isFullScreen() && !win.isMaximized()) {
@@ -85,6 +86,7 @@ exports.showImage = (path, filename) => {
 		}
 	}
 */
+
 	vid.style.zIndex = '-1';
 	vid.style.visibility = 'hidden';
 	vid.src = "";

@@ -8,7 +8,7 @@ const { index } = require('../js/constants'),
 const imageTypes = ['.jpg', '.png', '.jpeg', '.gif', '.webm', '.mp4'];
 const arg = remote.getGlobal('sharedObj').filepath;
 
-if (arg) { 
+if (arg) {
 
 	fs.readdir(path.dirname(arg), (err, content) => {
 
@@ -30,6 +30,8 @@ if (arg) {
 		} else {
 			helper.showImage(`${dirname}${file}`, file);
 		}
+
+		zoom.reset();
 
 		win.setMaximumSize(window.screen.availWidth, window.screen.availHeight);
 		win.show();
