@@ -8,16 +8,16 @@ exports.zoom = value => {
 	img, vid;
 
 	return {
-		size: (size) => {
+		size: size => {
 			this.size = size;
 		},
 		up: () => {
-			size += 5;
+			size += 6;
 			img.style.height = `${size}%`;
 			img.style.width = `${size}%`;
 		},
 		down: () => {
-			size -= 5;
+			size -= 6;
 			img.style.height = `${size}%`;
 			img.style.width = `${size}%`;
 		},

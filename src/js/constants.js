@@ -1,1 +1,1 @@
-exports.index = 2;
+exports.INDEX = 2;

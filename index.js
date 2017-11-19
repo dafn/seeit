@@ -1,6 +1,6 @@
 const electron = require('electron'),
 	{ app, BrowserWindow } = electron,
-	{ index } = require('./src/js/constants'),
+	{ INDEX } = require('./src/js/constants'),
 	path = require('path'),
 	url = require('url'),
 	sizeOf = require('image-size');
@@ -10,10 +10,10 @@ let win;
 createWindow = () => {
 
 	if (process.platform == 'win32') {
-		global.sharedObj = { filepath: process.argv[index], platform: process.platform };
+		global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform };
 	}
 
-	// global.sharedObj = { filepath: process.argv[index], platform: process.platform };
+	// global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform };
 
 	sizeOf(global.sharedObj.filepath, (err, dimensions) => {
 
@@ -43,8 +43,9 @@ createWindow = () => {
 }
 
 app.on('ready', createWindow);
-app.on('will-finish-launching', function () {
-	app.on('open-file', function (event, path) {
+app.on('will-finish-launching', () => {
+	app.releaseSingleInstance();
+	app.on('open-file', (event, path) => {
 		event.preventDefault();
 		global.sharedObj = { filepath: path, platform: process.platform };
 	});
@@ -59,8 +60,6 @@ app.on('activate', () => {
 		createWindow();
 	}
 })
-
-app.releaseSingleInstance();
 
 const getSize = dim => {
 	if (dim.ws > dim.wi && dim.hs > dim.hi) {

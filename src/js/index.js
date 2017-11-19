@@ -13,7 +13,7 @@ if (arg) {
 	fs.readdir(path.dirname(arg), (err, content) => {
 
 		const dirname = path.dirname(arg) + '/',
-			zoom = helper.zoom(100);
+			zoom = helper.zoom(106);
 
 		content.sort((a, b) => {
 			return fs.statSync(dirname + '/' + b).mtime.getTime() -

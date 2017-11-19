@@ -6,8 +6,8 @@ body {
 }
 
 video {
-	max-height:95%;
-    max-width: 95%;
+	max-height:100%;
+    max-width: 100%;
 	object-fit: contain;
 	margin: auto;
 	visibility: hidden;
@@ -25,7 +25,7 @@ video {
 	left: 50%;
 	top: 50%;
 	z-index: 1;
-	transform: translate(-50%, -50%);
+	transform: translate(-50%, -51.5%);
 }
 
 #titlebar {
