@@ -20,7 +20,8 @@ video {
 
 #image {
     object-fit: contain;
-    margin: auto;
+	margin: auto;
+	visibility: hidden;
 	position: relative;
 	left: 50%;
 	top: 50%;

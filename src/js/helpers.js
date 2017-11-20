@@ -1,4 +1,5 @@
 const win = require('electron').remote.getCurrentWindow(),
+	{ TYPES } = require('./constants');
 	img = document.getElementById('image'),
 	vid = document.getElementsByTagName('video')[0];
 
@@ -12,12 +13,12 @@ exports.zoom = value => {
 			this.size = size;
 		},
 		up: () => {
-			size += 6;
+			size += 4;
 			img.style.height = `${size}%`;
 			img.style.width = `${size}%`;
 		},
 		down: () => {
-			size -= 6;
+			size -= 4;
 			img.style.height = `${size}%`;
 			img.style.width = `${size}%`;
 		},
@@ -54,7 +55,35 @@ exports.iterator = (array, index) => {
 	};
 }
 
-exports.showVideo = (path, filename) => {
+exports.next = (files, path, dirname, zoom) => {
+	do { file = files.next(); }
+	while (TYPES.indexOf(path.extname(file).toLowerCase()) === -1);
+
+	if (path.extname(file) === '.webm' || path.extname(file) === '.mp4') {
+		showVideo(`${dirname}${file}`, file);
+	} else {
+		showImage(`${dirname}${file}`, file);
+	}
+
+	zoom.reset();
+	return file;
+}
+
+exports.prev = (files, path, dirname, zoom) => {
+	do { file = files.prev(); }
+	while (TYPES.indexOf(path.extname(file).toLowerCase()) === -1);
+
+	if (path.extname(file) === '.webm' || path.extname(file) === '.mp4') {
+		showVideo(`${dirname}${file}`, file);
+	} else {
+		showImage(`${dirname}${file}`, file);
+	}
+
+	zoom.reset();
+	return file;
+}
+
+showVideo = (path, filename) => {
 	document.getElementsByTagName('title')[0].innerText = filename;
 
 	img, vid;
@@ -66,58 +95,14 @@ exports.showVideo = (path, filename) => {
 	vid.style.zIndex = '1';
 }
 
-exports.showImage = (path, filename) => {
+showImage = (path, filename) => {
 	document.getElementsByTagName('title')[0].innerText = filename;
-
 	img, vid;
 
-	img.src = ""; // removes flickering when switching image after drag
 	img.src = path;
-
-/*
-	img.onload = () => {
-		if (!win.isFullScreen() && !win.isMaximized()) {
-			win.setSize(img.naturalWidth, img.naturalHeight);
-			win.setPosition(
-				parseInt((window.screen.availWidth-win.getSize()[0])/2),
-				parseInt((window.screen.availHeight-win.getSize()[1])/2)
-			);
-			
-		}
-	}
-*/
-
 	vid.style.zIndex = '-1';
 	vid.style.visibility = 'hidden';
 	vid.src = "";
 
 	img.style.visibility = 'visible';
-}
-
-exports.next = (files, imageTypes, path, dirname, zoom) => {
-	do { file = files.next(); }
-	while (imageTypes.indexOf(path.extname(file).toLowerCase()) === -1);
-
-	if (path.extname(file) === '.webm' || path.extname(file) === '.mp4') {
-		exports.showVideo(`${dirname}${file}`, file);
-	} else {
-		exports.showImage(`${dirname}${file}`, file);
-	}
-
-	zoom.reset();
-	return file;
-}
-
-exports.prev = (files, imageTypes, path, dirname, zoom) => {
-	do { file = files.prev(); }
-	while (imageTypes.indexOf(path.extname(file).toLowerCase()) === -1);
-
-	if (path.extname(file) === '.webm' || path.extname(file) === '.mp4') {
-		exports.showVideo(`${dirname}${file}`, file);
-	} else {
-		exports.showImage(`${dirname}${file}`, file);
-	}
-
-	zoom.reset();
-	return file;
 }

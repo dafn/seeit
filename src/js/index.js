@@ -1,86 +1,128 @@
-const { index } = require('../js/constants'),
-	remote = require('electron').remote,
+const remote = require('electron').remote,
 	win = remote.getCurrentWindow(),
+	arg = remote.getGlobal('sharedObj').filepath,
 	path = require('path'),
 	fs = require('fs'),
-	helper = require('../js/help');
+	helper = require('../js/helpers');
 
-const imageTypes = ['.jpg', '.png', '.jpeg', '.gif', '.webm', '.mp4'];
-const arg = remote.getGlobal('sharedObj').filepath;
+fs.readdir(path.dirname(arg), (err, content) => {
 
-if (arg) {
+	const dirname = path.dirname(arg) + '/',
+		zoom = helper.zoom(104);
 
-	fs.readdir(path.dirname(arg), (err, content) => {
+	content.sort((a, b) => {
+		return fs.statSync(dirname + '/' + b).mtime.getTime() -
+			fs.statSync(dirname + '/' + a).mtime.getTime();
+	});
 
-		const dirname = path.dirname(arg) + '/',
-			zoom = helper.zoom(106);
+	let file = path.basename(arg),
+		first = true;
 
-		content.sort((a, b) => {
-			return fs.statSync(dirname + '/' + b).mtime.getTime() -
-				fs.statSync(dirname + '/' + a).mtime.getTime();
-		});
+	const files = helper.iterator(content, content.indexOf(file));
 
-		var file = path.basename(arg);
-		const files = helper.iterator(content, content.indexOf(file));
+	document.getElementsByTagName('title')[0].innerText = file;
 
+	if (path.extname(file) === '.webm' || path.extname(file) === '.mp4') {
 		document.getElementsByTagName('title')[0].innerText = file;
 
-		if (path.extname(file) === '.webm' || path.extname(file) === '.mp4') {
-			helper.showVideo(`${dirname}${file}`, file);
-		} else {
-			helper.showImage(`${dirname}${file}`, file);
-		}
+		let vid = document.getElementsByTagName('video')[0];
 
-		zoom.reset();
+		vid.src = `${dirname}${file}`;
+		vid.style.visibility = 'visible';
+		vid.style.zIndex = '1';
 
-		win.setMaximumSize(window.screen.availWidth, window.screen.availHeight);
-		win.show();
+		vid.onloadeddata = () => {
+			if (first) {
+				first = false;
 
-		document.onkeydown = event => {
-			switch (event.code) {
-				case 'KeyD':
-				case 'ArrowRight':
-					file = helper.next(files, imageTypes, path, dirname, zoom);
-					break;
-				case 'KeyA':
-				case 'ArrowLeft':
-					file = helper.prev(files, imageTypes, path, dirname, zoom);
-					break;
-				case 'KeyW':
-				case 'ArrowUp':
-					zoom.up();
-					break;
-				case 'KeyS':
-				case 'ArrowDown':
-					zoom.down();
-					break;
-				case 'Backspace':
-				case 'Delete':
-					files.remove(`${dirname}${file}`);
-					file = helper.next(files, imageTypes, path, dirname, zoom);
-					break;
-				default:
-					break;
+				let size = getSize({
+					wi: vid.videoWidth, hi: vid.videoHeight,
+					ws: window.screen.availWidth, hs: window.screen.availHeight
+				});
+
+				win.setSize(size.w | 0, size.h | 0);
+				win.setMaximumSize(window.screen.availWidth, window.screen.availHeight);
+
+				win.show();
 			}
 		}
+	} else {
+		document.getElementsByTagName('title')[0].innerText = file;
 
-		document.onmousewheel = e => {
-			e.preventDefault();
-			(e.wheelDelta > 0) ? zoom.up() : zoom.down();
-		}
+		let img = document.getElementById('image');
+		img.src = `${dirname}${file}`;
+		img.style.visibility = 'visible';
 
-		window.onresize = e => {
-			TODO: 'center image on rezise'
+		img.onload = () => {
+			if (first) {
+				first = false;
+
+				let size = getSize({
+					wi: img.naturalWidth, hi: img.naturalHeight,
+					ws: window.screen.availWidth, hs: window.screen.availHeight
+				});
+
+				win.setSize(size.w | 0, size.h | 0);
+				win.setMaximumSize(window.screen.availWidth, window.screen.availHeight);
+
+				zoom.reset();
+
+				win.show();
+			}
 		}
-	});
-} else {
-	win.show();
-	TODO: 'What if no file is given?'
+	}
+
+	document.onkeydown = event => {
+		switch (event.code) {
+			case 'KeyD':
+			case 'ArrowRight':
+				file = helper.next(files, path, dirname, zoom);
+				break;
+			case 'KeyA':
+			case 'ArrowLeft':
+				file = helper.prev(files, path, dirname, zoom);
+				break;
+			case 'KeyW':
+			case 'ArrowUp':
+				zoom.up();
+				break;
+			case 'KeyS':
+			case 'ArrowDown':
+				zoom.down();
+				break;
+			case 'Backspace':
+			case 'Delete':
+				files.remove(`${dirname}${file}`);
+				file = helper.next(files, path, dirname, zoom);
+				break;
+			default:
+				break;
+		}
+	}
+});
+
+document.ondragover = e => e.preventDefault();
+document.ondrop = e => e.preventDefault();
+
+document.onmousewheel = e => {
+	e.preventDefault();
+	(e.wheelDelta > 0) ? zoom.up() : zoom.down();
+}
+
+window.onresize = e => {
+	TODO: 'center image on rezise'
 }
 
 $(() => {
 	$("#image").draggable();
 });
 
-document.ondragover = e => e.preventDefault();
-document.ondrop = e => e.preventDefault();
+getSize = dim => {
+	if (dim.ws > dim.wi && dim.hs > dim.hi) {
+		return { w: dim.wi, h: dim.hi }
+	}
+
+	return (dim.wi / dim.hi) < (dim.ws / dim.hs) ?
+		{ w: dim.wi * dim.hs / dim.hi, h: dim.hs } :
+		{ w: dim.ws, h: dim.hi * dim.ws / dim.wi }
+}
