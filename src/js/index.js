@@ -42,6 +42,7 @@ fs.readdir(path.dirname(arg), (err, content) => {
 
 				win.setSize(size.w | 0, size.h | 0);
 				win.setMaximumSize(window.screen.availWidth, window.screen.availHeight);
+				win.center();
 
 				win.show();
 			}
@@ -64,6 +65,7 @@ fs.readdir(path.dirname(arg), (err, content) => {
 
 				win.setSize(size.w | 0, size.h | 0);
 				win.setMaximumSize(window.screen.availWidth, window.screen.availHeight);
+				win.center();
 
 				zoom.reset();
 
