@@ -35,7 +35,7 @@ fs.readdir(path.dirname(arg), (err, content) => {
 			if (first) {
 				first = false;
 
-				let size = getSize({
+				let size = helper.setWindowSize({
 					wi: vid.videoWidth, hi: vid.videoHeight,
 					ws: window.screen.availWidth, hs: window.screen.availHeight
 				});
@@ -57,7 +57,7 @@ fs.readdir(path.dirname(arg), (err, content) => {
 			if (first) {
 				first = false;
 
-				let size = getSize({
+				let size = helper.setWindowSize({
 					wi: img.naturalWidth, hi: img.naturalHeight,
 					ws: window.screen.availWidth, hs: window.screen.availHeight
 				});
@@ -116,13 +116,3 @@ window.onresize = e => {
 $(() => {
 	$("#image").draggable();
 });
-
-getSize = dim => {
-	if (dim.ws > dim.wi && dim.hs > dim.hi) {
-		return { w: dim.wi, h: dim.hi }
-	}
-
-	return (dim.wi / dim.hi) < (dim.ws / dim.hs) ?
-		{ w: dim.wi * dim.hs / dim.hi, h: dim.hs } :
-		{ w: dim.ws, h: dim.hi * dim.ws / dim.wi }
-}

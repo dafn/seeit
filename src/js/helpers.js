@@ -1,11 +1,10 @@
 const win = require('electron').remote.getCurrentWindow(),
 	{ TYPES } = require('./constants');
-	img = document.getElementById('image'),
+img = document.getElementById('image'),
 	vid = document.getElementsByTagName('video')[0];
 
 exports.zoom = value => {
 	let size = value;
-
 	img, vid;
 
 	return {
@@ -83,9 +82,18 @@ exports.prev = (files, path, dirname, zoom) => {
 	return file;
 }
 
+exports.setWindowSize = dim => {
+	if (dim.ws > dim.wi && dim.hs > dim.hi) {
+		return { w: dim.wi, h: dim.hi }
+	}
+
+	return (dim.wi / dim.hi) < (dim.ws / dim.hs) ?
+		{ w: dim.wi * dim.hs / dim.hi, h: dim.hs } :
+		{ w: dim.ws, h: dim.hi * dim.ws / dim.wi }
+}
+
 showVideo = (path, filename) => {
 	document.getElementsByTagName('title')[0].innerText = filename;
-
 	img, vid;
 
 	vid.src = path;
