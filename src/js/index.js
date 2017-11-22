@@ -101,20 +101,21 @@ fs.readdir(path.dirname(arg), (err, content) => {
 				break;
 		}
 	}
-});
 
-document.ondragover = e => e.preventDefault();
-document.ondrop = e => e.preventDefault();
+	document.ondragover = e => e.preventDefault();
+	document.ondrop = e => e.preventDefault();
 
-document.onmousewheel = e => {
-	e.preventDefault();
-	(e.wheelDelta > 0) ? zoom.up() : zoom.down();
-}
+	document.onmousewheel = e => {
+		e.preventDefault();
+		(e.wheelDelta > 0) ? zoom.up() : zoom.down();
+	}
 
-window.onresize = e => {
-	TODO: 'center image on rezise'
-}
+	window.onresize = e => {
+		TODO: 'center image on rezise'
+	}
 
-$(() => {
-	$("#image").draggable();
+	$(() => {
+		$("#image").draggable();
+	});
+
 });
