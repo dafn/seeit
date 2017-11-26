@@ -8,7 +8,8 @@ const remote = require('electron').remote,
 fs.readdir(path.dirname(arg), (err, content) => {
 
 	const dirname = path.dirname(arg) + '/',
-		zoom = helper.zoom(104);
+		zoom = helper.zoom(100),
+		croppie = helper.croppie();
 
 	content.sort((a, b) => {
 		return fs.statSync(dirname + '/' + b).mtime.getTime() -
@@ -16,7 +17,9 @@ fs.readdir(path.dirname(arg), (err, content) => {
 	});
 
 	let file = path.basename(arg),
-		first = true;
+		first = true,
+		img = document.getElementById('image'),
+		vid = document.getElementsByTagName('video')[0];
 
 	const files = helper.iterator(content, content.indexOf(file));
 
@@ -24,8 +27,6 @@ fs.readdir(path.dirname(arg), (err, content) => {
 
 	if (path.extname(file) === '.webm' || path.extname(file) === '.mp4') {
 		document.getElementsByTagName('title')[0].innerText = file;
-
-		let vid = document.getElementsByTagName('video')[0];
 
 		vid.src = `${dirname}${file}`;
 		vid.style.visibility = 'visible';
@@ -50,7 +51,6 @@ fs.readdir(path.dirname(arg), (err, content) => {
 	} else {
 		document.getElementsByTagName('title')[0].innerText = file;
 
-		let img = document.getElementById('image');
 		img.src = `${dirname}${file}`;
 		img.style.visibility = 'visible';
 
@@ -74,15 +74,20 @@ fs.readdir(path.dirname(arg), (err, content) => {
 		}
 	}
 
+	let crop;
+
 	document.onkeydown = event => {
 		switch (event.code) {
 			case 'KeyD':
 			case 'ArrowRight':
-				file = helper.next(files, path, dirname, zoom);
+				if (!crop) { file = helper.next(files, path, dirname, zoom); }
+				break;
+			case 'KeyC':
+				if (vid.style.zIndex != 1) { crop = croppie.crop(); }
 				break;
 			case 'KeyA':
 			case 'ArrowLeft':
-				file = helper.prev(files, path, dirname, zoom);
+				if (!crop) { file = helper.prev(files, path, dirname, zoom); }
 				break;
 			case 'KeyW':
 			case 'ArrowUp':
@@ -91,6 +96,14 @@ fs.readdir(path.dirname(arg), (err, content) => {
 			case 'KeyS':
 			case 'ArrowDown':
 				zoom.down();
+				break;
+			case 'Enter':
+				if (crop) {
+					crop.result('blob').then( blob => {
+						croppie.save(blob, `${dirname}${file}`);
+						crop = croppie.crop();
+					});
+				}
 				break;
 			case 'Backspace':
 			case 'Delete':
@@ -106,12 +119,7 @@ fs.readdir(path.dirname(arg), (err, content) => {
 	document.ondrop = e => e.preventDefault();
 
 	document.onmousewheel = e => {
-		e.preventDefault();
 		(e.wheelDelta > 0) ? zoom.up() : zoom.down();
-	}
-
-	window.onresize = e => {
-		TODO: 'center image on rezise'
 	}
 
 	$(() => {

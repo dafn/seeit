@@ -1,11 +1,11 @@
 const win = require('electron').remote.getCurrentWindow(),
+	fs = require('fs'),
 	{ TYPES } = require('./constants');
-img = document.getElementById('image'),
-	vid = document.getElementsByTagName('video')[0];
+let img = $('#image'),
+	vid = $('video');
 
 exports.zoom = value => {
 	let size = value;
-	img, vid;
 
 	return {
 		size: size => {
@@ -13,24 +13,20 @@ exports.zoom = value => {
 		},
 		up: () => {
 			size += 4;
-			img.style.height = `${size}%`;
-			img.style.width = `${size}%`;
+			img.css({ 'height': `${size}vh`, 'width': `${size}vw`, })
 		},
 		down: () => {
 			size -= 4;
-			img.style.height = `${size}%`;
-			img.style.width = `${size}%`;
+			img.css({ 'height': `${size}vh`, 'width': `${size}vw`, })
 		},
 		reset: () => {
 			size = value;
-			img.style.height = `${size}%`;
-			img.style.width = `${size}%`;
-
-			img.style.top = '50%';
-			img.style.left = '50%';
-
-			vid.style.top = '50%';
-			vid.style.left = '50%';
+			img.css({
+				'height': `${size}vh`,
+				'width': `${size}vw`,
+				'top': '50%',
+				'left': '50%'
+			});
 		}
 	}
 }
@@ -92,25 +88,53 @@ exports.setWindowSize = dim => {
 		{ w: dim.ws, h: dim.hi * dim.ws / dim.wi }
 }
 
+exports.croppie = () => {
+	let cropping;
+
+	return {
+		crop: () => {
+			if (!cropping) {
+				cropping = new Croppie(document.getElementById("image"), {
+					viewport: { width: 150, height: 150 },
+					enableResize: true,
+					showZoomer: false
+				});
+			} else {
+				img.unwrap();
+				$('.cr-boundary, .cr-slider-wrap').remove();
+				cropping = null;
+			}
+			return cropping;
+		},
+		save: (blob, path) => {
+			let reader = new FileReader();
+
+			reader.onload = () => {
+				let base64 = reader.result.split(',')[1],
+					buffer = new Buffer(base64, 'base64');
+				fs.writeFile(path, buffer, err => {
+					err ? console.log(err) : console.log('success');
+				})
+			};
+
+			reader.readAsDataURL(blob);
+		}
+	}
+}
+
 showVideo = (path, filename) => {
 	document.getElementsByTagName('title')[0].innerText = filename;
-	img, vid;
 
-	vid.src = path;
-
-	img.style.visibility = 'hidden';
-	vid.style.visibility = 'visible';
-	vid.style.zIndex = '1';
+	img.css('visibility', 'hidden');
+	vid.attr('src', path);
+	vid.css({ 'visibility': 'visible', 'zIndex': '1' })
 }
 
 showImage = (path, filename) => {
 	document.getElementsByTagName('title')[0].innerText = filename;
-	img, vid;
 
-	img.src = path;
-	vid.style.zIndex = '-1';
-	vid.style.visibility = 'hidden';
-	vid.src = "";
-
-	img.style.visibility = 'visible';
+	img.attr('src', path);
+	vid.css({ 'visibility': 'hidden', 'zIndex': '-1' })
+	img.css('visibility', 'visible');
+	vid.attr('src', '');
 }

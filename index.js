@@ -10,7 +10,7 @@ createWindow = () => {
 		global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform };
 	}
 
-	// global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform };
+	global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform };
 
 	win = new BrowserWindow({
 		minWidth: 128, minHeight: 128, autoHideMenuBar: true, titleBarStyle: 'hidden',

@@ -26,12 +26,12 @@ video {
 	left: 50%;
 	top: 50%;
 	z-index: 1;
-	transform: translate(-50%, -51.5%);
+	transform: translate(-50%, -51.4%);
 }
 
 #titlebar {
 	height:22px;
-    width: 100%;
+    width: 100vw;
 	margin: 0;
 	left: 0;
 	top: 0;
