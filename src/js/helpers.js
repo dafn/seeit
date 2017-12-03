@@ -45,7 +45,8 @@ exports.iterator = (array, index) => {
 		},
 		remove: file => {
 			fs.unlinkSync(file);
-			array.splice(nextIndex -= 1, 1);
+			array.splice(nextIndex, 1);
+			nextIndex -= 1;
 		}
 	};
 }
