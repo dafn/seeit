@@ -14,7 +14,7 @@ createWindow = () => {
 
 	let win = new BrowserWindow({
 		minWidth: 128, minHeight: 128, autoHideMenuBar: true, titleBarStyle: 'hidden',
-		darkTheme: true, backgroundColor: '#21252B', show: true
+		darkTheme: true, backgroundColor: '#21252B', show: false
 	})
 
 	win.loadURL(`file://${__dirname}/src/view/index.html`)
