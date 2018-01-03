@@ -3,127 +3,123 @@ const remote = require('electron').remote,
 	arg = remote.getGlobal('sharedObj').filepath,
 	path = require('path'),
 	fs = require('fs'),
-	helper = require('../js/helpers');
+	helper = require('../js/helpers')
 
 fs.readdir(path.dirname(arg), (err, content) => {
 
 	const dirname = path.dirname(arg) + '/',
 		zoom = helper.zoom(100),
-		croppie = helper.croppie();
+		croppie = helper.croppie()
 
-	content.sort((a, b) => {
-		return fs.statSync(dirname + '/' + b).mtime.getTime() -
-			fs.statSync(dirname + '/' + a).mtime.getTime();
-	});
+	content.sort((a, b) =>
+		fs.statSync(dirname + '/' + b).mtime.getTime() -
+		fs.statSync(dirname + '/' + a).mtime.getTime()
+	)
 
 	let file = path.basename(arg),
 		first = true,
-		img = document.getElementById('image'),
-		vid = document.getElementsByTagName('video')[0];
+		img = document.querySelector('#image'),
+		vid = document.querySelector('video'),
+		title = document.querySelector('title')
 
-	const files = helper.iterator(content, content.indexOf(file));
+	const files = helper.iterator(content, content.indexOf(file))
 
-	document.getElementsByTagName('title')[0].innerText = file;
+	title.innerText = file
 
 	if (path.extname(file) === '.webm' || path.extname(file) === '.mp4') {
-		document.getElementsByTagName('title')[0].innerText = file;
+		title.innerText = file
 
-		vid.src = `${dirname}${file}`;
-		vid.style.visibility = 'visible';
-		vid.style.zIndex = '1';
+		vid.src = `${dirname}${file}`
+		vid.style.visibility = 'visible'
+		vid.style.zIndex = '1'
 
 		vid.onloadeddata = () => {
 			if (first) {
-				first = false;
+				first = false
 
 				let size = helper.setWindowSize({
 					wi: vid.videoWidth, hi: vid.videoHeight,
 					ws: window.screen.availWidth, hs: window.screen.availHeight
 				});
 
-				win.setSize(size.w | 0, size.h | 0);
-				win.setMaximumSize(window.screen.availWidth, window.screen.availHeight);
-				win.center();
+				win.setSize(size.w | 0, size.h | 0)
+				win.setMaximumSize(window.screen.availWidth, window.screen.availHeight)
+				win.center()
 
-				win.show();
+				win.show()
 			}
 		}
 	} else {
-		document.getElementsByTagName('title')[0].innerText = file;
+		title.innerText = file
 
-		img.src = `${dirname}${file}`;
-		img.style.visibility = 'visible';
+		img.src = `${dirname}${file}`
+		img.style.visibility = 'visible'
 
 		img.onload = () => {
 			if (first) {
-				first = false;
+				first = false
 
 				let size = helper.setWindowSize({
 					wi: img.naturalWidth, hi: img.naturalHeight,
 					ws: window.screen.availWidth, hs: window.screen.availHeight
 				});
 
-				win.setSize(size.w | 0, size.h | 0);
-				win.setMaximumSize(window.screen.availWidth, window.screen.availHeight);
-				win.center();
+				win.setSize(size.w | 0, size.h | 0)
+				win.setMaximumSize(window.screen.availWidth, window.screen.availHeight)
+				win.center()
 
-				zoom.reset();
+				zoom.reset()
 
-				win.show();
+				win.show()
 			}
 		}
 	}
 
-	let crop;
+	let crop
 
 	document.onkeydown = event => {
 		switch (event.code) {
 			case 'KeyD':
 			case 'ArrowRight':
-				if (!crop) { file = helper.next(files, path, dirname, zoom); }
-				break;
+				return !crop && (
+					file = helper.iterate(files, path, dirname, zoom, 1)
+				)
 			case 'KeyC':
-				if (vid.style.zIndex != 1) { crop = croppie.crop(); }
-				break;
+				return vid.style.zIndex != 1 && (
+					crop = croppie.crop()
+				)
 			case 'KeyA':
 			case 'ArrowLeft':
-				if (!crop) { file = helper.prev(files, path, dirname, zoom); }
-				break;
+				return !crop && (
+					file = helper.iterate(files, path, dirname, zoom, -1)
+				)
 			case 'KeyW':
 			case 'ArrowUp':
-				zoom.up();
-				break;
+				return zoom.up()
 			case 'KeyS':
 			case 'ArrowDown':
-				zoom.down();
-				break;
+				return zoom.down()
 			case 'Enter':
-				if (crop) {
-					crop.result('blob').then( blob => {
-						croppie.save(blob, `${dirname}${file}`);
-						crop = croppie.crop();
-					});
-				}
-				break;
+				return crop && (
+					crop.result('blob').then(blob => {
+						croppie.save(blob, `${dirname}${file}`)
+						crop = croppie.crop()
+					})
+				)
 			case 'Backspace':
 			case 'Delete':
-				files.remove(`${dirname}${file}`);
-				file = helper.next(files, path, dirname, zoom);
-				break;
+				files.remove(`${dirname}${file}`)
+				return file = helper.next(files, path, dirname, zoom)
 			default:
-				break;
+				return
 		}
 	}
 
-	document.ondragover = e => e.preventDefault();
-	document.ondrop = e => e.preventDefault();
-
-	document.onmousewheel = e => {
-		(e.wheelDelta > 0) ? zoom.up() : zoom.down();
-	}
+	document.ondragover = e => e.preventDefault()
+	document.ondrop = e => e.preventDefault()
+	document.onmousewheel = e => (e.wheelDelta > 0) ? zoom.up() : zoom.down()
 
 	$(() => {
-		$("#image").draggable();
-	});
-
-});
+		$("#image").draggable()
+	})
+})

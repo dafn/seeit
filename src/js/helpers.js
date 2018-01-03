@@ -1,85 +1,70 @@
 const win = require('electron').remote.getCurrentWindow(),
 	fs = require('fs'),
-	{ TYPES } = require('./constants');
-let img = $('#image'),
-	vid = $('video');
+	{ TYPES } = require('./constants')
+
+let title = document.querySelector('title'),
+	img = $('#image'),
+	vid = $('video')
 
 exports.zoom = value => {
-	let size = value;
+	let size = value
 
 	return {
 		size: size => {
-			this.size = size;
+			this.size = size
 		},
 		up: () => {
-			size += 4;
+			size += 4
 			img.css({ 'height': `${size}vh`, 'width': `${size}vw`, })
 		},
 		down: () => {
-			size -= 4;
+			size -= 4
 			img.css({ 'height': `${size}vh`, 'width': `${size}vw`, })
 		},
 		reset: () => {
-			size = value;
+			size = value
 			img.css({
 				'height': `${size}vh`,
 				'width': `${size}vw`,
 				'top': '50%',
 				'left': '50%'
-			});
+			})
 		}
 	}
 }
 
 exports.iterator = (array, index) => {
-	index ? nextIndex = index : nextIndex = 0;
+	index ? nextIndex = index : nextIndex = 0
 
 	return {
-		next: () => {
-			nextIndex++;
-			return (nextIndex < array.length) ? array[nextIndex] : array[nextIndex = 0]
-		},
-		prev: () => {
-			nextIndex--;
-			return (nextIndex >= 0) ? array[nextIndex] : array[nextIndex = array.length - 1]
-		},
+		next: () => (
+			array[nextIndex = (nextIndex + array.length + 1) % array.length]
+		),
+		prev: () => (
+			array[nextIndex = (nextIndex + array.length - 1) % array.length]
+		),
 		remove: file => {
-			fs.unlinkSync(file);
-			array.splice(nextIndex, 1);
+			fs.unlinkSync(file)
+			array.splice(nextIndex, 1)
 			nextIndex -= 1;
 		}
 	};
 }
 
-exports.next = (files, path, dirname, zoom) => {
-	do { file = files.next(); }
-	while (TYPES.indexOf(path.extname(file).toLowerCase()) === -1);
+exports.iterate = (files, path, dirname, zoom, direction) => {
+	do file = direction == 1 ? files.next() : files.prev()
+	while (TYPES.indexOf(path.extname(file).toLowerCase()) === -1)
 
-	if (path.extname(file) === '.webm' || path.extname(file) === '.mp4') {
-		showVideo(`${dirname}${file}`, file);
-	} else {
-		showImage(`${dirname}${file}`, file);
-	}
+	path.extname(file) === '.webm' || path.extname(file) === '.mp4' ?
+		showVideo(`${dirname}${file}`, file) :
+		showImage(`${dirname}${file}`, file)
 
-	zoom.reset();
-	return file;
-}
-
-exports.prev = (files, path, dirname, zoom) => {
-	do { file = files.prev(); }
-	while (TYPES.indexOf(path.extname(file).toLowerCase()) === -1);
-
-	if (path.extname(file) === '.webm' || path.extname(file) === '.mp4') {
-		showVideo(`${dirname}${file}`, file);
-	} else {
-		showImage(`${dirname}${file}`, file);
-	}
-
-	zoom.reset();
-	return file;
+	zoom.reset()
+	return file
 }
 
 exports.setWindowSize = dim => {
+
 	if (dim.ws > dim.wi && dim.hs > dim.hi) {
 		return { w: dim.wi, h: dim.hi }
 	}
@@ -90,52 +75,52 @@ exports.setWindowSize = dim => {
 }
 
 exports.croppie = () => {
-	let cropping;
+	let cropping
 
 	return {
 		crop: () => {
 			if (!cropping) {
-				cropping = new Croppie(document.getElementById("image"), {
+				cropping = new Croppie(document.querySelector("#image"), {
 					viewport: { width: 150, height: 150 },
 					enableResize: true,
 					showZoomer: false
 				});
 			} else {
-				img.unwrap();
-				$('.cr-boundary, .cr-slider-wrap').remove();
-				cropping = null;
+				img.unwrap()
+				$('.cr-boundary, .cr-slider-wrap').remove()
+				cropping = null
 			}
-			return cropping;
+			return cropping
 		},
 		save: (blob, path) => {
-			let reader = new FileReader();
+			let reader = new FileReader()
 
 			reader.onload = () => {
 				let base64 = reader.result.split(',')[1],
-					buffer = new Buffer(base64, 'base64');
+					buffer = new Buffer(base64, 'base64')
 				fs.writeFile(path, buffer, err => {
-					err ? console.log(err) : console.log('success');
+					err ? console.log(err) : console.log('croppie success')
 				})
-			};
+			}
 
-			reader.readAsDataURL(blob);
+			reader.readAsDataURL(blob)
 		}
 	}
 }
 
 showVideo = (path, filename) => {
-	document.getElementsByTagName('title')[0].innerText = filename;
+	title.innerText = filename
 
-	img.css('visibility', 'hidden');
-	vid.attr('src', path);
+	img.css('visibility', 'hidden')
+	vid.attr('src', path)
 	vid.css({ 'visibility': 'visible', 'zIndex': '1' })
 }
 
 showImage = (path, filename) => {
-	document.getElementsByTagName('title')[0].innerText = filename;
+	title.innerText = filename
 
-	img.attr('src', path);
+	img.attr('src', path)
 	vid.css({ 'visibility': 'hidden', 'zIndex': '-1' })
-	img.css('visibility', 'visible');
-	vid.attr('src', '');
+	img.css('visibility', 'visible')
+	vid.attr('src', '')
 }
