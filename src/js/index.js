@@ -109,7 +109,7 @@ fs.readdir(path.dirname(arg), (err, content) => {
 			case 'Backspace':
 			case 'Delete':
 				files.remove(`${dirname}${file}`)
-				return file = helper.next(files, path, dirname, zoom)
+				return file = helper.iterate(files, path, dirname, zoom, 1)
 			default:
 				return
 		}

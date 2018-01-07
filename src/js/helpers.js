@@ -38,16 +38,16 @@ exports.iterator = (array, index) => {
 
 	return {
 		next: () => (
-			array[nextIndex = (nextIndex + array.length + 1) % array.length]
+			array[(nextIndex = (nextIndex + array.length + 1) % array.length)]
 		),
 		prev: () => (
-			array[nextIndex = (nextIndex + array.length - 1) % array.length]
+			array[(nextIndex = (nextIndex + array.length - 1) % array.length)]
 		),
-		remove: file => {
-			fs.unlinkSync(file)
-			array.splice(nextIndex, 1)
-			nextIndex -= 1;
-		}
+		remove: file => (
+			fs.unlink(file, () => {
+				array.splice(nextIndex -= 1, 1)
+			})
+		)
 	};
 }
 
