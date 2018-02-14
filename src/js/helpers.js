@@ -1,6 +1,7 @@
 const win = require('electron').remote.getCurrentWindow(),
 	fs = require('fs'),
-	{ TYPES } = require('./constants')
+	{ TYPES } = require('./constants'),
+	trash = require('trash')
 
 let title = document.querySelector('title'),
 	img = $('#image'),
@@ -44,7 +45,7 @@ exports.iterator = (array, index) => {
 			array[(nextIndex = (nextIndex + array.length - 1) % array.length)]
 		),
 		remove: file => (
-			fs.unlink(file, () => {
+			trash(file).then(() => {
 				array.splice(nextIndex -= 1, 1)
 			})
 		)
