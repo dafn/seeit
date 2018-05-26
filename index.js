@@ -32,17 +32,16 @@ createWindow = () => {
 		// win.webContents.openDevTools();
 		windows.push(win)
 	}
-
 }
 
-app.on('ready', createWindow)
 app.on('window-all-closed', () => app.quit())
-app.on('activate', () => process.platform == 'win32' ? createWindow() : !!windows.length && createWindow())
-
 app.on('will-finish-launching', () => {
 	app.on('open-file', (event, path) => {
 		event.preventDefault()
+
 		global.sharedObj = { filepath: path, platform: process.platform }
-		process.platform == 'win32' ? createWindow() : !!windows.length && createWindow()
+
+		app.isReady() && createWindow()
+		app.on('ready', createWindow)
 	})
 })
