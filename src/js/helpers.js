@@ -7,7 +7,7 @@ let title = document.querySelector('title'),
 	img = $('#image'),
 	vid = $('video')
 
-exports.zoom = value => {
+exports.zoom = (value = 100, increment = 4) => {
 	let size = value
 
 	return {
@@ -15,11 +15,11 @@ exports.zoom = value => {
 			this.size = size
 		},
 		up: () => {
-			size += 4
+			size += increment
 			img.css({ 'height': `${size}vh`, 'width': `${size}vw`, })
 		},
 		down: () => {
-			size -= 4
+			size -= increment
 			img.css({ 'height': `${size}vh`, 'width': `${size}vw`, })
 		},
 		reset: () => {
@@ -34,8 +34,8 @@ exports.zoom = value => {
 	}
 }
 
-exports.iterator = (array, index) => {
-	index ? nextIndex = index : nextIndex = 0
+exports.iterator = (array, index = 0) => {
+	nextIndex = index
 
 	return {
 		next: () => (
@@ -49,14 +49,14 @@ exports.iterator = (array, index) => {
 				array.splice(nextIndex -= 1, 1)
 			})
 		)
-	};
+	}
 }
 
 exports.iterate = (files, path, dirname, zoom, direction) => {
 	do file = direction == 1 ? files.next() : files.prev()
 	while (TYPES.indexOf(path.extname(file).toLowerCase()) === -1)
 
-	path.extname(file) === '.webm' || path.extname(file) === '.mp4' ?
+	path.extname(file).toLowerCase() === '.webm' || path.extname(file).toLowerCase() === '.mp4' ?
 		showVideo(`${dirname}${file}`, file) :
 		showImage(`${dirname}${file}`, file)
 

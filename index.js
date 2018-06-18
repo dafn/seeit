@@ -7,7 +7,7 @@ let windows = [],
 
 createWindow = () => {
 
-	// global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform }
+	global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform }
 
 	if (process.platform == 'win32') {
 		global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform }
@@ -19,8 +19,10 @@ createWindow = () => {
 
 		win32_win.loadURL(`file://${__dirname}/src/view/index.html`)
 		win32_win.on('closed', () => win = null)
-	} else {
 
+		// win32_win.webContents.openDevTools()
+
+	} else {
 		let win = new BrowserWindow({
 			minWidth: 128, minHeight: 128, autoHideMenuBar: true, titleBarStyle: 'hidden',
 			darkTheme: true, backgroundColor: '#21252B', show: false
@@ -29,19 +31,17 @@ createWindow = () => {
 		win.loadURL(`file://${__dirname}/src/view/index.html`)
 		win.on('closed', () => win = null)
 
-		// win.webContents.openDevTools();
+		// win.webContents.openDevTools()
+
 		windows.push(win)
 	}
 }
-
+app.on('ready', createWindow)
 app.on('window-all-closed', () => app.quit())
 app.on('will-finish-launching', () => {
 	app.on('open-file', (event, path) => {
 		event.preventDefault()
-
 		global.sharedObj = { filepath: path, platform: process.platform }
-
 		app.isReady() && createWindow()
-		app.on('ready', createWindow)
 	})
 })

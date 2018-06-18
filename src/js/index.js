@@ -8,7 +8,7 @@ const remote = require('electron').remote,
 fs.readdir(path.dirname(arg), (err, content) => {
 
 	const dirname = path.dirname(arg) + '/',
-		zoom = helper.zoom(100),
+		zoom = helper.zoom(),
 		croppie = helper.croppie()
 
 	content.sort((a, b) =>
@@ -26,7 +26,7 @@ fs.readdir(path.dirname(arg), (err, content) => {
 
 	title.innerText = file
 
-	if (path.extname(file) === '.webm' || path.extname(file) === '.mp4') {
+	if (path.extname(file).toLowerCase() === '.webm' || path.extname(file).toLowerCase() === '.mp4') {
 		title.innerText = file
 
 		vid.src = `${dirname}${file}`
@@ -119,7 +119,16 @@ fs.readdir(path.dirname(arg), (err, content) => {
 	document.ondrop = e => e.preventDefault()
 	document.onmousewheel = e => (e.wheelDelta > 0) ? zoom.up() : zoom.down()
 
+	img.ondrag = e => {
+		e.preventDefault()
+
+		target.style.left = e.clientX
+		target.style.top = e.clientY
+	}
+
+	/*
 	$(() => {
 		$("#image").draggable()
 	})
+	*/
 })

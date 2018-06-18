@@ -1,7 +1,7 @@
-body {
-    background-color: rgb(16, 19, 22);
+html {
+	background-color: rgb(16, 19, 22);
     align-content: center;
-    overflow: hidden;
+	overflow: hidden;
 	height: 100vh;
 }
 
@@ -22,11 +22,11 @@ video {
     object-fit: contain;
 	margin: auto;
 	visibility: hidden;
-	position: relative;
+	position: absolute;
 	left: 50%;
 	top: 50%;
 	z-index: 1;
-	transform: translate(-50%, -51.4%);
+	transform: translate( -50%, -50%);
 }
 
 #titlebar {
