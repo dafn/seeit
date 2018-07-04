@@ -2,10 +2,11 @@ const win = require('electron').remote.getCurrentWindow(),
 	fs = require('fs'),
 	{ TYPES } = require('./constants'),
 	trash = require('trash')
+Croppr = require('croppr')
 
 let title = document.querySelector('title'),
-	img = $('#image'),
-	vid = $('video')
+	img = document.querySelector('img'),
+	vid = document.querySelector('video')
 
 exports.zoom = (value = 100, increment = 4) => {
 	let size = value
@@ -16,20 +17,20 @@ exports.zoom = (value = 100, increment = 4) => {
 		},
 		up: () => {
 			size += increment
-			img.css({ 'height': `${size}vh`, 'width': `${size}vw`, })
+			img.style.height = `${size}vh`
+			img.style.width = `${size}vw`
 		},
 		down: () => {
 			size -= increment
-			img.css({ 'height': `${size}vh`, 'width': `${size}vw`, })
+			img.style.height = `${size}vh`
+			img.style.width = `${size}vw`
 		},
 		reset: () => {
 			size = value
-			img.css({
-				'height': `${size}vh`,
-				'width': `${size}vw`,
-				'top': '50%',
-				'left': '50%'
-			})
+			img.style.height = `${size}vh`
+			img.style.width = `${size}vw`
+			img.style.top = '50%'
+			img.style.left = '50%'
 		}
 	}
 }
@@ -81,15 +82,9 @@ exports.croppie = () => {
 	return {
 		crop: () => {
 			if (!cropping) {
-				cropping = new Croppie(document.querySelector("#image"), {
-					viewport: { width: 150, height: 150 },
-					enableResize: true,
-					showZoomer: false
-				});
+				console.log('wip')
 			} else {
-				img.unwrap()
-				$('.cr-boundary, .cr-slider-wrap').remove()
-				cropping = null
+				console.log('wip')
 			}
 			return cropping
 		},
@@ -112,16 +107,18 @@ exports.croppie = () => {
 showVideo = (path, filename) => {
 	title.innerText = filename
 
-	img.css('visibility', 'hidden')
-	vid.attr('src', path)
-	vid.css({ 'visibility': 'visible', 'zIndex': '1' })
+	img.style.visibility = 'hidden'
+	vid.src = path
+	vid.style.visibility = 'visible'
+	vid.style.zIndex = 1
 }
 
 showImage = (path, filename) => {
 	title.innerText = filename
 
-	img.attr('src', path)
-	vid.css({ 'visibility': 'hidden', 'zIndex': '-1' })
-	img.css('visibility', 'visible')
-	vid.attr('src', '')
+	img.src = path
+	vid.style.visibility = 'hidden'
+	vid.style.zIndex = -1
+	img.style.visibility = 'visible'
+	vid.src = ''
 }

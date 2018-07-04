@@ -18,7 +18,7 @@ video {
 	z-index: -1;
 }
 
-#image {
+img, .croppr-container, .croppr {
     object-fit: contain;
 	margin: auto;
 	visibility: hidden;

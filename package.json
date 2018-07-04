@@ -40,6 +40,7 @@
 	},
 	"dependencies": {
 		"croppie": "^2.5.1",
+		"croppr": "^2.3.0",
 		"trash": "^4.2.1",
 		"yarn": "^1.1.0"
 	}

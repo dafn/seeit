@@ -18,7 +18,7 @@ fs.readdir(path.dirname(arg), (err, content) => {
 
 	let file = path.basename(arg),
 		first = true,
-		img = document.querySelector('#image'),
+		img = document.querySelector('img'),
 		vid = document.querySelector('video'),
 		title = document.querySelector('title')
 
@@ -86,7 +86,7 @@ fs.readdir(path.dirname(arg), (err, content) => {
 				)
 			case 'KeyC':
 				return vid.style.zIndex != 1 && (
-					crop = croppie.crop()
+					console.log('wip') // crop = croppie.crop()
 				)
 			case 'KeyA':
 			case 'ArrowLeft':
@@ -122,13 +122,7 @@ fs.readdir(path.dirname(arg), (err, content) => {
 	img.ondrag = e => {
 		e.preventDefault()
 
-		target.style.left = e.clientX
-		target.style.top = e.clientY
+		e.target.style.left = e.clientX
+		e.target.style.top = e.clientY
 	}
-
-	/*
-	$(() => {
-		$("#image").draggable()
-	})
-	*/
 })
