@@ -2,7 +2,6 @@ const win = require('electron').remote.getCurrentWindow(),
 	fs = require('fs'),
 	{ TYPES } = require('./constants'),
 	trash = require('trash')
-Croppr = require('croppr')
 
 let title = document.querySelector('title'),
 	img = document.querySelector('img'),
@@ -74,34 +73,6 @@ exports.setWindowSize = dim => {
 	return (dim.wi / dim.hi) < (dim.ws / dim.hs) ?
 		{ w: dim.wi * dim.hs / dim.hi, h: dim.hs } :
 		{ w: dim.ws, h: dim.hi * dim.ws / dim.wi }
-}
-
-exports.croppie = () => {
-	let cropping
-
-	return {
-		crop: () => {
-			if (!cropping) {
-				console.log('wip')
-			} else {
-				console.log('wip')
-			}
-			return cropping
-		},
-		save: (blob, path) => {
-			let reader = new FileReader()
-
-			reader.onload = () => {
-				let base64 = reader.result.split(',')[1],
-					buffer = new Buffer(base64, 'base64')
-				fs.writeFile(path, buffer, err => {
-					err ? console.log(err) : console.log('croppie success')
-				})
-			}
-
-			reader.readAsDataURL(blob)
-		}
-	}
 }
 
 showVideo = (path, filename) => {

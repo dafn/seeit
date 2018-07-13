@@ -1,22 +1,25 @@
 const remote = require('electron').remote,
 	win = remote.getCurrentWindow(),
-	arg = remote.getGlobal('sharedObj').filepath,
+	sharedObj = remote.getGlobal('sharedObj'),
 	path = require('path'),
 	fs = require('fs'),
 	helper = require('../js/helpers')
 
-fs.readdir(path.dirname(arg), (err, content) => {
 
-	const dirname = path.dirname(arg) + '/',
-		zoom = helper.zoom(),
-		croppie = helper.croppie()
+if (sharedObj.platform == 'win32') 
+	document.querySelector('#win-titlebar-btns').style.visibility = 'visible'
+
+fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
+
+	const dirname = path.dirname(sharedObj.filepath) + '/',
+		zoom = helper.zoom()
 
 	content.sort((a, b) =>
 		fs.statSync(dirname + '/' + b).mtime.getTime() -
 		fs.statSync(dirname + '/' + a).mtime.getTime()
 	)
 
-	let file = path.basename(arg),
+	let file = path.basename(sharedObj.filepath),
 		first = true,
 		img = document.querySelector('img'),
 		vid = document.querySelector('video'),
@@ -75,37 +78,20 @@ fs.readdir(path.dirname(arg), (err, content) => {
 		}
 	}
 
-	let crop
-
 	document.onkeydown = event => {
 		switch (event.code) {
 			case 'KeyD':
 			case 'ArrowRight':
-				return !crop && (
-					file = helper.iterate(files, path, dirname, zoom, 1)
-				)
-			case 'KeyC':
-				return vid.style.zIndex != 1 && (
-					console.log('wip') // crop = croppie.crop()
-				)
+				return file = helper.iterate(files, path, dirname, zoom, 1)
 			case 'KeyA':
 			case 'ArrowLeft':
-				return !crop && (
-					file = helper.iterate(files, path, dirname, zoom, -1)
-				)
+				return file = helper.iterate(files, path, dirname, zoom, -1)
 			case 'KeyW':
 			case 'ArrowUp':
 				return zoom.up()
 			case 'KeyS':
 			case 'ArrowDown':
 				return zoom.down()
-			case 'Enter':
-				return crop && (
-					crop.result('blob').then(blob => {
-						croppie.save(blob, `${dirname}${file}`)
-						crop = croppie.crop()
-					})
-				)
 			case 'Backspace':
 			case 'Delete':
 				files.remove(`${dirname}${file}`)
@@ -118,6 +104,10 @@ fs.readdir(path.dirname(arg), (err, content) => {
 	document.ondragover = e => e.preventDefault()
 	document.ondrop = e => e.preventDefault()
 	document.onmousewheel = e => (e.wheelDelta > 0) ? zoom.up() : zoom.down()
+
+	document.getElementById("min-btn").addEventListener("click", e => win.minimize())
+	document.getElementById("max-btn").addEventListener("click", e => win.isMaximized ? win.maximize() : win.minimize())
+	document.getElementById("close-btn").addEventListener("click", e => win.close())
 
 	img.ondrag = e => {
 		e.preventDefault()

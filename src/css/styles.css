@@ -40,3 +40,11 @@ img, .croppr-container, .croppr {
 	user-select: none;
 	-webkit-app-region: drag;
 }
+
+#win-titlebar-btns {
+	-webkit-app-region: no-drag;
+	visibility: hidden;
+	position: fixed;
+	top: 0px;
+	right: 0px;
+}
