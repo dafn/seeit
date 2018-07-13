@@ -1,6 +1,5 @@
 const { app, BrowserWindow } = require('electron'),
-	{ INDEX } = require('./src/js/constants'),
-	path = require('path');
+	{ INDEX } = require('./src/js/constants')
 
 let windows = [],
 	win32_win

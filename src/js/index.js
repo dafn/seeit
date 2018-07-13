@@ -5,8 +5,9 @@ const remote = require('electron').remote,
 	fs = require('fs'),
 	helper = require('../js/helpers')
 
+let size = { w: 128, h: 128 }
 
-if (sharedObj.platform == 'win32') 
+if (sharedObj.platform == 'win32')
 	document.querySelector('#win-titlebar-btns').style.visibility = 'visible'
 
 fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
@@ -40,7 +41,7 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 			if (first) {
 				first = false
 
-				let size = helper.setWindowSize({
+				size = helper.setWindowSize({
 					wi: vid.videoWidth, hi: vid.videoHeight,
 					ws: window.screen.availWidth, hs: window.screen.availHeight
 				});
@@ -62,7 +63,7 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 			if (first) {
 				first = false
 
-				let size = helper.setWindowSize({
+				size = helper.setWindowSize({
 					wi: img.naturalWidth, hi: img.naturalHeight,
 					ws: window.screen.availWidth, hs: window.screen.availHeight
 				});
@@ -105,9 +106,13 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 	document.ondrop = e => e.preventDefault()
 	document.onmousewheel = e => (e.wheelDelta > 0) ? zoom.up() : zoom.down()
 
-	document.getElementById("min-btn").addEventListener("click", e => win.minimize())
-	document.getElementById("max-btn").addEventListener("click", e => win.isMaximized ? win.maximize() : win.minimize())
 	document.getElementById("close-btn").addEventListener("click", e => win.close())
+	document.getElementById("min-btn").addEventListener("click", e => win.minimize())
+	document.getElementById("max-btn").addEventListener("click", e => {
+		if (win.isMaximized()) win.setSize(size.w, size.h)
+		else win.maximize()
+		zoom.reset()
+	})
 
 	img.ondrag = e => {
 		e.preventDefault()
