@@ -8,8 +8,7 @@ const remote = require('electron').remote,
 fs.readdir(path.dirname(arg), (err, content) => {
 
 	const dirname = path.dirname(arg) + '/',
-		zoom = helper.zoom(),
-		croppie = helper.croppie()
+		zoom = helper.zoom()
 
 	content.sort((a, b) =>
 		fs.statSync(dirname + '/' + b).mtime.getTime() -
@@ -75,42 +74,24 @@ fs.readdir(path.dirname(arg), (err, content) => {
 		}
 	}
 
-	let crop
-
 	document.onkeydown = event => {
-		console.log(event.code)
 		switch (event.code) {
 			case 'KeyD':
 				return img.style.visibility != 'hidden' && (
 					img.style.transform = `translate(-50%, -50%) rotate(${helper.getRotation(1)}deg)`)
 			case 'ArrowRight':
-				return !crop && (
-					file = helper.iterate(files, path, dirname, zoom, 1)
-				)
-			case 'KeyC':
-				return vid.style.zIndex != 1 && (
-					console.log('wip') // crop = croppie.crop()
-				)
+				return file = helper.iterate(files, path, dirname, zoom, 1)
 			case 'KeyA':
 				return img.style.visibility != 'hidden' && (
 					img.style.transform = `translate(-50%, -50%) rotate(${helper.getRotation(-1)}deg)`)
 			case 'ArrowLeft':
-				return !crop && (
-					file = helper.iterate(files, path, dirname, zoom, -1)
-				)
+				return file = helper.iterate(files, path, dirname, zoom, -1)
 			case 'KeyW':
 			case 'ArrowUp':
 				return zoom.up()
 			case 'KeyS':
 			case 'ArrowDown':
 				return zoom.down()
-			case 'Enter':
-				return crop && (
-					crop.result('blob').then(blob => {
-						croppie.save(blob, `${dirname}${file}`)
-						crop = croppie.crop()
-					})
-				)
 			case 'Backspace':
 			case 'Delete':
 				files.remove(`${dirname}${file}`)

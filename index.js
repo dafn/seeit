@@ -1,13 +1,12 @@
 const { app, BrowserWindow } = require('electron'),
-	{ INDEX } = require('./src/js/constants'),
-	path = require('path');
+	{ INDEX } = require('./src/js/constants')
 
 let windows = [],
 	win32_win
 
 createWindow = () => {
 
-	global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform }
+	// global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform }
 
 	if (process.platform == 'win32') {
 		global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform }
@@ -23,6 +22,7 @@ createWindow = () => {
 		// win32_win.webContents.openDevTools()
 
 	} else {
+
 		let win = new BrowserWindow({
 			minWidth: 128, minHeight: 128, autoHideMenuBar: true, titleBarStyle: 'hidden',
 			darkTheme: true, backgroundColor: '#21252B', show: false
@@ -36,12 +36,14 @@ createWindow = () => {
 		windows.push(win)
 	}
 }
-app.on('ready', createWindow)
-app.on('window-all-closed', () => app.quit())
-app.on('will-finish-launching', () => {
+
+process.platform == 'darwin' && app.on('will-finish-launching', () => {
 	app.on('open-file', (event, path) => {
 		event.preventDefault()
 		global.sharedObj = { filepath: path, platform: process.platform }
 		app.isReady() && createWindow()
 	})
 })
+
+app.on('ready', createWindow)
+app.on('window-all-closed', app.quit)
