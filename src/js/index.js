@@ -62,7 +62,7 @@ fs.readdir(path.dirname(arg), (err, content) => {
 				let size = helper.setWindowSize({
 					wi: img.naturalWidth, hi: img.naturalHeight,
 					ws: window.screen.availWidth, hs: window.screen.availHeight
-				});
+				})
 
 				win.setSize(size.w | 0, size.h | 0)
 				win.setMaximumSize(window.screen.availWidth, window.screen.availHeight)
@@ -78,8 +78,11 @@ fs.readdir(path.dirname(arg), (err, content) => {
 	let crop
 
 	document.onkeydown = event => {
+		console.log(event.code)
 		switch (event.code) {
 			case 'KeyD':
+				return img.style.visibility != 'hidden' && (
+					img.style.transform = `translate(-50%, -50%) rotate(${helper.getRotation(1)}deg)`)
 			case 'ArrowRight':
 				return !crop && (
 					file = helper.iterate(files, path, dirname, zoom, 1)
@@ -89,6 +92,8 @@ fs.readdir(path.dirname(arg), (err, content) => {
 					console.log('wip') // crop = croppie.crop()
 				)
 			case 'KeyA':
+				return img.style.visibility != 'hidden' && (
+					img.style.transform = `translate(-50%, -50%) rotate(${helper.getRotation(-1)}deg)`)
 			case 'ArrowLeft':
 				return !crop && (
 					file = helper.iterate(files, path, dirname, zoom, -1)

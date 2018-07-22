@@ -1,12 +1,15 @@
 const win = require('electron').remote.getCurrentWindow(),
 	fs = require('fs'),
 	{ TYPES } = require('./constants'),
-	trash = require('trash')
-Croppr = require('croppr')
+	trash = require('trash'),
+	Croppr = require('croppr')
 
 let title = document.querySelector('title'),
 	img = document.querySelector('img'),
-	vid = document.querySelector('video')
+	vid = document.querySelector('video'),
+	rotation = 0
+
+exports.getRotation = direction => rotation += 90*direction
 
 exports.zoom = (value = 100, increment = 4) => {
 	let size = value
@@ -27,6 +30,7 @@ exports.zoom = (value = 100, increment = 4) => {
 		},
 		reset: () => {
 			size = value
+			rotation = 0
 			img.style.height = `${size}vh`
 			img.style.width = `${size}vw`
 			img.style.top = '50%'
