@@ -12,7 +12,7 @@ createWindow = () => {
 		global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform }
 
 		win32_win = new BrowserWindow({
-			minWidth: 128, minHeight: 128, autoHideMenuBar: true, titleBarStyle: 'hidden',
+			minWidth: 128, minHeight: 128, autoHideMenuBar: true, frame: false,
 			darkTheme: true, backgroundColor: '#21252B', show: false
 		})
 
