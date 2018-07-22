@@ -37,13 +37,14 @@ createWindow = () => {
 	}
 }
 
-process.platform == 'darwin' && app.on('will-finish-launching', () => {
-	app.on('open-file', (event, path) => {
-		event.preventDefault()
-		global.sharedObj = { filepath: path, platform: process.platform }
-		app.isReady() && createWindow()
+process.platform == 'darwin' &&
+	app.on('will-finish-launching', () => {
+		app.on('open-file', (event, path) => {
+			event.preventDefault()
+			global.sharedObj = { filepath: path, platform: 'darwin' }
+			app.isReady() && createWindow()
+		})
 	})
-})
 
 app.on('ready', createWindow)
 app.on('window-all-closed', app.quit)

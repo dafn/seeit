@@ -1,13 +1,34 @@
 const remote = require('electron').remote,
 	win = remote.getCurrentWindow(),
-	arg = remote.getGlobal('sharedObj').filepath,
+	sharedObj = remote.getGlobal('sharedObj'),
 	path = require('path'),
 	fs = require('fs'),
 	helper = require('../js/helpers')
 
-fs.readdir(path.dirname(arg), (err, content) => {
+let size = { w: 128, h: 128 }
 
-	const dirname = path.dirname(arg) + '/',
+if (sharedObj.platform == 'win32') {
+
+	let titlebarButtons = document.querySelector('#win-titlebar-btns')
+
+	titlebarButtons.style.visibility = 'visible'
+	titlebarButtons.innerHTML = `
+		<button id="min-btn">-</button>
+		<button id="max-btn">+</button>
+		<button id="close-btn">x</button>
+	`
+	document.querySelector("#close-btn").addEventListener("click", e => win.close())
+	document.querySelector("#min-btn").addEventListener("click", e => win.minimize())
+	document.querySelector("#max-btn").addEventListener("click", e => {
+		if (win.isMaximized()) win.unmaximize()
+		else win.maximize()
+		// zoom.reset()
+	})
+}
+
+fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
+
+	const dirname = path.dirname(sharedObj.filepath) + '/',
 		zoom = helper.zoom()
 
 	content.sort((a, b) =>
@@ -15,7 +36,7 @@ fs.readdir(path.dirname(arg), (err, content) => {
 		fs.statSync(dirname + '/' + a).mtime.getTime()
 	)
 
-	let file = path.basename(arg),
+	let file = path.basename(sharedObj.filepath),
 		first = true,
 		img = document.querySelector('img'),
 		vid = document.querySelector('video'),
@@ -36,7 +57,7 @@ fs.readdir(path.dirname(arg), (err, content) => {
 			if (first) {
 				first = false
 
-				let size = helper.setWindowSize({
+				size = helper.setWindowSize({
 					wi: vid.videoWidth, hi: vid.videoHeight,
 					ws: window.screen.availWidth, hs: window.screen.availHeight
 				});
@@ -58,7 +79,7 @@ fs.readdir(path.dirname(arg), (err, content) => {
 			if (first) {
 				first = false
 
-				let size = helper.setWindowSize({
+				size = helper.setWindowSize({
 					wi: img.naturalWidth, hi: img.naturalHeight,
 					ws: window.screen.availWidth, hs: window.screen.availHeight
 				})
