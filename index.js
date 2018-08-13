@@ -6,7 +6,7 @@ let windows = [],
 
 createWindow = () => {
 
-	// global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform }
+	global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform }
 
 	if (process.platform == 'win32') {
 		global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform }

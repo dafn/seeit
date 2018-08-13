@@ -9,6 +9,8 @@ let size = { w: 128, h: 128 }
 
 if (sharedObj.platform == 'win32') {
 
+	console.log('init win')
+
 	let titlebarButtons = document.querySelector('#win-titlebar-btns')
 
 	titlebarButtons.style.visibility = 'visible'
@@ -125,14 +127,6 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 	document.ondragover = e => e.preventDefault()
 	document.ondrop = e => e.preventDefault()
 	document.onmousewheel = e => (e.wheelDelta > 0) ? zoom.up() : zoom.down()
-
-	document.getElementById("close-btn").addEventListener("click", e => win.close())
-	document.getElementById("min-btn").addEventListener("click", e => win.minimize())
-	document.getElementById("max-btn").addEventListener("click", e => {
-		if (win.isMaximized()) win.setSize(size.w, size.h)
-		else win.maximize()
-		zoom.reset()
-	})
 
 	img.ondrag = e => {
 		e.preventDefault()
