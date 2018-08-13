@@ -128,10 +128,26 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 	document.ondrop = e => e.preventDefault()
 	document.onmousewheel = e => (e.wheelDelta > 0) ? zoom.up() : zoom.down()
 
-	img.ondrag = e => {
-		e.preventDefault()
+	img.onmousedown = e => {
+		let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
-		e.target.style.left = e.clientX
-		e.target.style.top = e.clientY
+		e.preventDefault()
+		pos3 = e.clientX
+		pos4 = e.clientY
+
+		document.onmousemove = e => {
+			e.preventDefault()
+			pos1 = pos3 - e.clientX
+			pos2 = pos4 - e.clientY
+			pos3 = e.clientX
+			pos4 = e.clientY
+			img.style.top = (img.offsetTop - pos2) + "px"
+			img.style.left = (img.offsetLeft - pos1) + "px"
+		}
+
+		document.onmouseup = () => {
+			document.onmouseup = null
+			document.onmousemove = null
+		}
 	}
 })
