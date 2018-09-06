@@ -7,10 +7,7 @@ const remote = require('electron').remote,
 	{ TYPES_VIDEO } = require('../js/constants')
 
 if (sharedObj.platform == 'win32') {
-
-	console.log('init win')
-
-	let titlebarButtons = document.getElementById('win-titlebar-btns')
+	const titlebarButtons = document.getElementById('win-titlebar-btns')
 
 	titlebarButtons.style.visibility = 'visible'
 	titlebarButtons.innerHTML = `
@@ -20,9 +17,9 @@ if (sharedObj.platform == 'win32') {
 	`
 	document.getElementById("close-btn").addEventListener("click", e => win.close())
 	document.getElementById("min-btn").addEventListener("click", e => win.minimize())
-	document.getElementById("max-btn").addEventListener("click", e => {
+	document.getElementById("max-btn").addEventListener("click", e =>
 		win.isMaximized() ? win.unmaximize() : win.maximize()
-	})
+	)
 }
 
 fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
@@ -59,7 +56,7 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 				size = helper.setWindowSize({
 					wi: vid.videoWidth, hi: vid.videoHeight,
 					ws: window.screen.availWidth, hs: window.screen.availHeight
-				});
+				})
 
 				win.setSize(size.w | 0, size.h | 0)
 				win.setMaximumSize(window.screen.availWidth, window.screen.availHeight)
