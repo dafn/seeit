@@ -3,15 +3,14 @@ const remote = require('electron').remote,
 	sharedObj = remote.getGlobal('sharedObj'),
 	path = require('path'),
 	fs = require('fs'),
-	helper = require('../js/helpers')
-
-let size = { w: 128, h: 128 }
+	helper = require('../js/helpers'),
+	{ TYPES_VIDEO } = require('../js/constants')
 
 if (sharedObj.platform == 'win32') {
 
 	console.log('init win')
 
-	let titlebarButtons = document.querySelector('#win-titlebar-btns')
+	let titlebarButtons = document.getElementById('win-titlebar-btns')
 
 	titlebarButtons.style.visibility = 'visible'
 	titlebarButtons.innerHTML = `
@@ -19,12 +18,10 @@ if (sharedObj.platform == 'win32') {
 		<button id="max-btn">+</button>
 		<button id="close-btn">x</button>
 	`
-	document.querySelector("#close-btn").addEventListener("click", e => win.close())
-	document.querySelector("#min-btn").addEventListener("click", e => win.minimize())
-	document.querySelector("#max-btn").addEventListener("click", e => {
-		if (win.isMaximized()) win.unmaximize()
-		else win.maximize()
-		// zoom.reset()
+	document.getElementById("close-btn").addEventListener("click", e => win.close())
+	document.getElementById("min-btn").addEventListener("click", e => win.minimize())
+	document.getElementById("max-btn").addEventListener("click", e => {
+		win.isMaximized() ? win.unmaximize() : win.maximize()
 	})
 }
 
@@ -38,17 +35,17 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 		fs.statSync(dirname + '/' + a).mtime.getTime()
 	)
 
-	let file = path.basename(sharedObj.filepath),
-		first = true,
-		img = document.querySelector('img'),
-		vid = document.querySelector('video'),
-		title = document.querySelector('title')
+	let first = true,
+		file = path.basename(sharedObj.filepath)
 
-	const files = helper.iterator(content, content.indexOf(file))
+	const img = document.getElementById('image'),
+		vid = document.getElementById('video'),
+		title = document.getElementById('title'),
+		files = helper.iterator(content, content.indexOf(file))
 
 	title.innerText = file
 
-	if (path.extname(file).toLowerCase() === '.webm' || path.extname(file).toLowerCase() === '.mp4') {
+	if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
 		title.innerText = file
 
 		vid.src = `${dirname}${file}`
@@ -95,6 +92,11 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 				win.show()
 			}
 		}
+
+		img.onerror = e => {
+			alert(`File extension "${path.extname(file)}" is not supported by seeit`)
+			win.close()
+		}
 	}
 
 	document.onkeydown = event => {
@@ -128,26 +130,5 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 	document.ondrop = e => e.preventDefault()
 	document.onmousewheel = e => (e.wheelDelta > 0) ? zoom.up() : zoom.down()
 
-	img.onmousedown = e => {
-		let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-
-		e.preventDefault()
-		pos3 = e.clientX
-		pos4 = e.clientY
-
-		document.onmousemove = e => {
-			e.preventDefault()
-			pos1 = pos3 - e.clientX
-			pos2 = pos4 - e.clientY
-			pos3 = e.clientX
-			pos4 = e.clientY
-			img.style.top = (img.offsetTop - pos2) + "px"
-			img.style.left = (img.offsetLeft - pos1) + "px"
-		}
-
-		document.onmouseup = () => {
-			document.onmouseup = null
-			document.onmousemove = null
-		}
-	}
+	img.onmousedown = helper.move
 })

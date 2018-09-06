@@ -1,9 +1,9 @@
-const { TYPES } = require('./constants'),
+const { TYPES_ALL } = require('./constants'),
 	trash = require('trash')
 
-let title = document.querySelector('title'),
-	img = document.querySelector('img'),
-	vid = document.querySelector('video'),
+let title = document.getElementById('title'),
+	img = document.getElementById('image'),
+	vid = document.getElementById('video'),
 	rotation = 0
 
 exports.getRotation = direction => rotation += 90*direction
@@ -57,7 +57,7 @@ exports.iterator = (array, index = 0) => {
 
 exports.iterate = (files, path, dirname, zoom, direction) => {
 	do file = direction == 1 ? files.next() : files.prev()
-	while (TYPES.indexOf(path.extname(file).toLowerCase()) === -1)
+	while (TYPES_ALL.indexOf(path.extname(file).toLowerCase()) === -1)
 
 	path.extname(file).toLowerCase() === '.webm' || path.extname(file).toLowerCase() === '.mp4' ?
 		showVideo(`${dirname}${file}`, file) :
@@ -69,13 +69,35 @@ exports.iterate = (files, path, dirname, zoom, direction) => {
 
 exports.setWindowSize = dim => {
 
-	if (dim.ws > dim.wi && dim.hs > dim.hi) {
+	if (dim.ws > dim.wi && dim.hs > dim.hi)
 		return { w: dim.wi, h: dim.hi }
-	}
 
 	return (dim.wi / dim.hi) < (dim.ws / dim.hs) ?
 		{ w: dim.wi * dim.hs / dim.hi, h: dim.hs } :
 		{ w: dim.ws, h: dim.hi * dim.ws / dim.wi }
+}
+
+exports.move = e => {
+	let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+	e.preventDefault()
+	pos3 = e.clientX
+	pos4 = e.clientY
+
+	document.onmousemove = e => {
+		e.preventDefault()
+		pos1 = pos3 - e.clientX
+		pos2 = pos4 - e.clientY
+		pos3 = e.clientX
+		pos4 = e.clientY
+		img.style.top = (img.offsetTop - pos2) + "px"
+		img.style.left = (img.offsetLeft - pos1) + "px"
+	}
+
+	document.onmouseup = () => {
+		document.onmouseup = null
+		document.onmousemove = null
+	}
 }
 
 showVideo = (path, filename) => {

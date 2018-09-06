@@ -1,17 +1,15 @@
 const { app, BrowserWindow } = require('electron'),
 	{ INDEX } = require('./src/js/constants')
 
-let windows = [],
-	win32_win
+let windows = []
 
 createWindow = () => {
 
-	global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform }
 
 	if (process.platform == 'win32') {
 		global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform }
 
-		win32_win = new BrowserWindow({
+		let win32_win = new BrowserWindow({
 			minWidth: 128, minHeight: 128, autoHideMenuBar: true, frame: false,
 			darkTheme: true, backgroundColor: '#21252B', show: false
 		})
@@ -22,6 +20,8 @@ createWindow = () => {
 		// win32_win.webContents.openDevTools()
 
 	} else {
+
+		// global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform }
 
 		let win = new BrowserWindow({
 			minWidth: 128, minHeight: 128, autoHideMenuBar: true, titleBarStyle: 'hidden',
