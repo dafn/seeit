@@ -36,9 +36,7 @@
 	"homepage": "https://github.com/dafn/seeit#readme",
 	"devDependencies": {
 		"electron": "^1.7.6",
-		"electron-builder": "^19.27.7",
-		"eslint": "^5.5.0",
-		"eslint-config-google": "^0.10.0"
+		"electron-builder": "^19.27.7"
 	},
 	"dependencies": {
 		"trash": "^4.2.1"
