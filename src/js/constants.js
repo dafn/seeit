@@ -20,4 +20,4 @@ exports.TYPES_VIDEO = [
   '.mkv',
 ]
 
-exports.INDEX = 1
+exports.INDEX = 2
