@@ -7,3 +7,5 @@ dist/
 # Config files
 .yarnclean
 yarn.*
+
+.vscode/

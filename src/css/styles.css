@@ -1,17 +1,17 @@
 html {
 	background-color: rgb(16, 19, 22);
-    align-content: center;
+  align-content: center;
 	overflow: hidden;
 	height: 100vh;
 }
 
 video {
 	max-height:100%;
-    max-width: 100%;
+  max-width: 100%;
 	object-fit: contain;
 	margin: auto;
 	visibility: hidden;
-    position: absolute;
+  position: absolute;
 	left: 50%;
 	top: 50%;
 	transform: translate( -50%, -50%);
@@ -19,7 +19,7 @@ video {
 }
 
 img {
-    object-fit: contain;
+  object-fit: contain;
 	margin: auto;
 	visibility: hidden;
 	position: absolute;
@@ -31,11 +31,11 @@ img {
 
 #titlebar {
 	height:22px;
-    width: 100vw;
+  width: 100vw;
 	margin: 0;
 	left: 0;
 	top: 0;
-    position: absolute;
+  position: absolute;
 	z-index: 2;
 	user-select: none;
 	-webkit-app-region: drag;
@@ -43,8 +43,37 @@ img {
 
 #win-titlebar-btns {
 	-webkit-app-region: no-drag;
+	display: flex;
 	visibility: hidden;
 	position: fixed;
 	top: 0px;
 	right: 0px;
+}
+
+#close-btn {
+	background: rgb(146, 38, 31);
+}
+
+#max-btn, #min-btn {
+	background: none;
+	color: darkgray;
+}
+
+:focus {
+	outline: none;
+}
+
+#close-btn:hover {
+	background: #CE352C;
+}
+
+#min-btn:hover, #max-btn:hover {
+	background: darkgray;
+	color: black;
+}
+
+.windows_toolbar_buttons {
+	height: 30px;
+	width: 30px;
+	border-style: none;
 }

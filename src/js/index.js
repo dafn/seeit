@@ -20,9 +20,9 @@ if (sharedObj.platform == 'win32') {
 
 	titlebarButtons.style.visibility = 'visible'
 	titlebarButtons.innerHTML = `
-			<button id="min-btn">-</button>
-			<button id="max-btn">+</button>
-			<button id="close-btn">x</button>
+			<button id="min-btn" class="windows_toolbar_buttons">-</button>
+			<button id="max-btn" class="windows_toolbar_buttons">+</button>
+			<button id="close-btn" class="windows_toolbar_buttons">x</button>
 		`
 	document.getElementById("close-btn").addEventListener("click", e => win.close())
 	document.getElementById("min-btn").addEventListener("click", e => win.minimize())
