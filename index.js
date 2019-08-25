@@ -20,17 +20,17 @@ createWindow = () => {
 
 	} else {
 
-		// global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform }
+		global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform }
 
 		let win = new BrowserWindow({
 			minWidth: 128, minHeight: 128, autoHideMenuBar: true, titleBarStyle: 'hidden',
-			darkTheme: true, backgroundColor: '#21252B', show: false
+			darkTheme: true, backgroundColor: '#21252B', show: true
 		})
 
 		win.loadURL(`file://${__dirname}/src/view/index.html`)
 		win.on('closed', () => win = null)
 
-		// win.webContents.openDevTools()
+		win.webContents.openDevTools()
 
 		windows.push(win)
 	}
