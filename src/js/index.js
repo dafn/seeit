@@ -80,7 +80,7 @@ if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
 	}
 
 	img.onerror = e => {
-		alert(`File extension "${path.extname(file)}" is not supported by seeit`)
+		alert(`Error opening file: \n\n${dirname}${file}`)
 		win.close()
 	}
 }
@@ -102,8 +102,8 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 
 	title.innerText = file
 
-	document.onkeydown = event => {
-		switch (event.code) {
+	document.onkeydown = ({ code }) => {
+		switch (code) {
 			case 'KeyD':
 				return img.style.visibility != 'hidden' && (
 					img.style.transform = `translate(-50%, -50%) rotate(${helper.getRotation(1)}deg)`)
@@ -124,9 +124,17 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 			case 'Delete':
 				files.remove(`${dirname}${file}`)
 				return file = helper.iterate(files, path, dirname, zoom, 1)
-			case 'Escape': win.unmaximize()
+			case 'Tab': return win.isMaximized() ? win.unmaximize() : win.maximize()
+			case 'Escape': return win.close()
 			default:
 				return
+		}
+	}
+
+	document.onmousedown = ({ which }) => {
+		switch(which) {
+			case 5: return file = helper.iterate(files, path, dirname, zoom, 1)
+			case 4: return file = helper.iterate(files, path, dirname, zoom, -1)
 		}
 	}
 })

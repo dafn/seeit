@@ -20,4 +20,4 @@ exports.TYPES_VIDEO = [
   '.mkv',
 ]
 
-exports.INDEX = 2
+exports.INDEX = process.env.NODE_ENV === 'development' ? 2 : 1

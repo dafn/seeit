@@ -6,6 +6,6 @@ dist/
 
 # Config files
 .yarnclean
-yarn.*
+*.log
 
 .vscode/

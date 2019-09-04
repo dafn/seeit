@@ -51,12 +51,13 @@ img {
 }
 
 #close-btn {
-	background: rgb(146, 38, 31);
+	background: rgb(190, 17, 5);
+	color: white;
 }
 
 #max-btn, #min-btn {
 	background: none;
-	color: darkgray;
+	color: rgb(255, 255, 255);
 }
 
 :focus {
@@ -64,12 +65,12 @@ img {
 }
 
 #close-btn:hover {
-	background: #CE352C;
+	background: rgb(253, 55, 41);
 }
 
 #min-btn:hover, #max-btn:hover {
-	background: darkgray;
-	color: black;
+	background: rgb(236, 236, 236);
+	color: rgb(36, 36, 36);
 }
 
 .windows_toolbar_buttons {

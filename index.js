@@ -10,13 +10,15 @@ createWindow = () => {
 
 		let win32_win = new BrowserWindow({
 			minWidth: 128, minHeight: 128, autoHideMenuBar: true, frame: false,
-			darkTheme: true, backgroundColor: '#21252B', show: false
+			darkTheme: true, backgroundColor: '#21252B', show: process.env.NODE_ENV === 'development',
+			webPreferences: { nodeIntegration: true }
 		})
 
 		win32_win.loadURL(`file://${__dirname}/src/view/index.html`)
 		win32_win.on('closed', () => win = null)
 
-		// win32_win.webContents.openDevTools()
+		process.env.NODE_ENV === 'development' &&
+			win32_win.webContents.openDevTools()
 
 	} else {
 
@@ -24,13 +26,15 @@ createWindow = () => {
 
 		let win = new BrowserWindow({
 			minWidth: 128, minHeight: 128, autoHideMenuBar: true, titleBarStyle: 'hidden',
-			darkTheme: true, backgroundColor: '#21252B', show: true
+			darkTheme: true, backgroundColor: '#21252B', show: process.env.NODE_ENV === 'development',
+			webPreferences: { nodeIntegration: true }
 		})
 
 		win.loadURL(`file://${__dirname}/src/view/index.html`)
 		win.on('closed', () => win = null)
 
-		win.webContents.openDevTools()
+		process.env.NODE_ENV === 'development' &&
+			win.webContents.openDevTools()
 
 		windows.push(win)
 	}
