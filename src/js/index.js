@@ -102,8 +102,8 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 
 	title.innerText = file
 
-	document.onkeydown = ({ code }) => {
-		switch (code) {
+	document.onkeydown = event => {
+		switch (event.code) {
 			case 'KeyD':
 				return img.style.visibility != 'hidden' && (
 					img.style.transform = `translate(-50%, -50%) rotate(${helper.getRotation(1)}deg)`)
@@ -124,7 +124,9 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 			case 'Delete':
 				files.remove(`${dirname}${file}`)
 				return file = helper.iterate(files, path, dirname, zoom, 1)
-			case 'Tab': return win.isMaximized() ? win.unmaximize() : win.maximize()
+			case 'Tab': 
+				event.preventDefault()
+				return win.isMaximized() ? win.unmaximize() : win.maximize()
 			case 'Escape': return win.close()
 			default:
 				return
