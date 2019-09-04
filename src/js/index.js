@@ -89,7 +89,7 @@ document.ondragover = e => e.preventDefault()
 document.ondrop = e => e.preventDefault()
 document.onmousewheel = e => (e.wheelDelta > 0) ? zoom.up() : zoom.down()
 
-img.onmousedown = helper.move
+img.onmousedown = e => e.which === 1 && helper.move(e)
 
 fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 
@@ -102,8 +102,8 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 
 	title.innerText = file
 
-	document.onkeydown = event => {
-		switch (event.code) {
+	document.onkeydown = e => {
+		switch (e.code) {
 			case 'KeyD':
 				return img.style.visibility != 'hidden' && (
 					img.style.transform = `translate(-50%, -50%) rotate(${helper.getRotation(1)}deg)`)
@@ -125,7 +125,7 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 				files.remove(`${dirname}${file}`)
 				return file = helper.iterate(files, path, dirname, zoom, 1)
 			case 'Tab': 
-				event.preventDefault()
+				e.preventDefault()
 				return win.isMaximized() ? win.unmaximize() : win.maximize()
 			case 'Escape': return win.close()
 			default:

@@ -51,7 +51,7 @@ img {
 }
 
 #close-btn {
-	background: rgb(190, 17, 5);
+	background: rgb(199, 13, 0);
 	color: white;
 }
 
@@ -65,7 +65,7 @@ img {
 }
 
 #close-btn:hover {
-	background: rgb(253, 55, 41);
+	background: rgb(255, 17, 0);
 }
 
 #min-btn:hover, #max-btn:hover {
