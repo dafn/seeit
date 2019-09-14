@@ -9,8 +9,8 @@ const remote = require('electron').remote,
 const img = document.getElementById('image'),
 	vid = document.getElementById('video'),
 	title = document.getElementById('title'),
-	dirname = path.dirname(sharedObj.filepath) + '/'
-zoom = helper.zoom()
+	dirname = path.dirname(sharedObj.filepath) + '/',
+	transform = helper.transform()
 
 let first = true,
 	file = path.basename(sharedObj.filepath)
@@ -51,6 +51,8 @@ if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
 			win.setMaximumSize(window.screen.availWidth, window.screen.availHeight)
 			win.center()
 
+			transform.reset()
+
 			win.show()
 		}
 	}
@@ -73,7 +75,7 @@ if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
 			win.setMaximumSize(window.screen.availWidth, window.screen.availHeight)
 			win.center()
 
-			zoom.reset()
+			transform.reset()
 
 			win.show()
 		}
@@ -87,7 +89,7 @@ if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
 
 document.ondragover = e => e.preventDefault()
 document.ondrop = e => e.preventDefault()
-document.onmousewheel = e => (e.wheelDelta > 0) ? zoom.up() : zoom.down()
+document.onmousewheel = e => (e.wheelDelta > 0) ? transform.up() : transform.down()
 
 img.onmousedown = e => e.which === 1 && helper.move(e)
 
@@ -105,25 +107,23 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 	document.onkeydown = e => {
 		switch (e.code) {
 			case 'KeyD':
-				return img.style.visibility != 'hidden' && (
-					img.style.transform = `translate(-50%, -50%) rotate(${helper.getRotation(1)}deg)`)
+				return transform.rotate(1)
 			case 'ArrowRight':
-				return file = helper.iterate(files, path, dirname, zoom, 1)
+				return file = helper.iterate(files, path, dirname, transform, 1)
 			case 'KeyA':
-				return img.style.visibility != 'hidden' && (
-					img.style.transform = `translate(-50%, -50%) rotate(${helper.getRotation(-1)}deg)`)
+				return transform.rotate(-1)
 			case 'ArrowLeft':
-				return file = helper.iterate(files, path, dirname, zoom, -1)
+				return file = helper.iterate(files, path, dirname, transform, -1)
 			case 'KeyW':
 			case 'ArrowUp':
-				return zoom.up()
+				return transform.up()
 			case 'KeyS':
 			case 'ArrowDown':
-				return zoom.down()
+				return transform.down()
 			case 'Backspace':
 			case 'Delete':
 				files.remove(`${dirname}${file}`)
-				return file = helper.iterate(files, path, dirname, zoom, 1)
+				return file = helper.iterate(files, path, dirname, transform, 1)
 			case 'Tab': 
 				e.preventDefault()
 				return win.isMaximized() ? win.unmaximize() : win.maximize()
@@ -135,8 +135,8 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 
 	document.onmousedown = ({ which }) => {
 		switch(which) {
-			case 5: return file = helper.iterate(files, path, dirname, zoom, 1)
-			case 4: return file = helper.iterate(files, path, dirname, zoom, -1)
+			case 5: return file = helper.iterate(files, path, dirname, transform, 1)
+			case 4: return file = helper.iterate(files, path, dirname, transform, -1)
 		}
 	}
 })

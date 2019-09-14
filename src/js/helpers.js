@@ -3,13 +3,11 @@ const { TYPES_ALL, TYPES_VIDEO } = require('./constants'),
 
 let title = document.getElementById('title'),
   img = document.getElementById('image'),
-  vid = document.getElementById('video'),
-  rotation = 0
+  vid = document.getElementById('video')
 
-exports.getRotation = direction => rotation += 90 * direction
 
-exports.zoom = (value = 1, increment = .05) => {
-  let size = value
+exports.transform = (value = 1, increment = .05) => {
+  let size = value, rotation = 0
 
   return {
     size: size => {
@@ -17,14 +15,20 @@ exports.zoom = (value = 1, increment = .05) => {
     },
     up: () => {
       size += increment
-      vid.style.transform = `translate(-50%, -50%) scale(${size})`
-      img.style.transform = `translate(-50%, -50%) scale(${size})`
+      vid.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`
+      img.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`
     },
     down: () => {
       size -= increment
-      vid.style.transform = `translate(-50%, -50%) scale(${size})`
-      img.style.transform = `translate(-50%, -50%) scale(${size})`
+      vid.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`
+      img.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`
 
+    },
+    rotate: direction => {
+      if (img.style.visibility === 'visible')
+        img.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation += 90 * direction}deg)`
+      else
+        vid.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation += 90 * direction}deg)`
     },
     reset: () => {
       size = value
@@ -55,15 +59,15 @@ exports.iterator = (array, index = 0) => {
   }
 }
 
-exports.iterate = (files, path, dirname, zoom, direction) => {
+exports.iterate = (files, path, dirname, transform, direction) => {
   do file = direction == 1 ? files.next() : files.prev()
   while (TYPES_ALL.indexOf(path.extname(file).toLowerCase()) === -1)
 
   TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1 ?
     showVideo(`${dirname}${file}`, file) :
     showImage(`${dirname}${file}`, file)
-  
-  zoom.reset()
+
+  transform.reset()
   return file
 }
 
