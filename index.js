@@ -22,7 +22,8 @@ createWindow = () => {
 
 	} else {
 
-		global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform }
+		if (process.env.NODE_ENV === 'development')
+			global.sharedObj = { filepath: process.argv[INDEX], platform: process.platform }
 
 		let win = new BrowserWindow({
 			minWidth: 128, minHeight: 128, autoHideMenuBar: true, titleBarStyle: 'hidden',
