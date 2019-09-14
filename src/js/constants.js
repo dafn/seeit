@@ -1,4 +1,11 @@
-exports.TYPES_ALL = [
+const TYPES_VIDEO = [
+  '.ogg',
+  '.webm',
+  '.mp4',
+  '.mkv',
+]
+
+const TYPES_ALL = [
   '.jpg',
   '.jpeg',
   '.gif',
@@ -7,17 +14,13 @@ exports.TYPES_ALL = [
   '.svg',
   '.ico',
   '.webp',
-  '.ogg',
-  '.webm',
-  '.mp4',
-  '.mkv',
+  ...TYPES_VIDEO
 ]
 
-exports.TYPES_VIDEO = [
-  '.ogg',
-  '.webm',
-  '.mp4',
-  '.mkv',
-]
+const INDEX = process.env.NODE_ENV === 'development' ? 2 : 1
 
-exports.INDEX = process.env.NODE_ENV === 'development' ? 2 : 1
+module.exports = {
+  TYPES_VIDEO,
+  TYPES_ALL,
+  INDEX
+}
