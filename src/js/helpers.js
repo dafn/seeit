@@ -8,7 +8,7 @@ let title = document.getElementById('title'),
 
 exports.getRotation = direction => rotation += 90 * direction
 
-exports.zoom = (value = 100, increment = 4) => {
+exports.zoom = (value = 1, increment = .05) => {
   let size = value
 
   return {
@@ -17,20 +17,20 @@ exports.zoom = (value = 100, increment = 4) => {
     },
     up: () => {
       size += increment
-      img.style.height = `${size}vh`
-      img.style.width = `${size}vw`
+      vid.style.transform = `translate(-50%, -50%) scale(${size})`
+      img.style.transform = `translate(-50%, -50%) scale(${size})`
     },
     down: () => {
       size -= increment
-      img.style.height = `${size}vh`
-      img.style.width = `${size}vw`
+      vid.style.transform = `translate(-50%, -50%) scale(${size})`
+      img.style.transform = `translate(-50%, -50%) scale(${size})`
+
     },
     reset: () => {
       size = value
       rotation = 0
-      img.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`
-      img.style.height = `${size}vh`
-      img.style.width = `${size}vw`
+      img.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`
+      vid.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`
       img.style.top = '50%'
       img.style.left = '50%'
     }
