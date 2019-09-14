@@ -121,7 +121,6 @@ showVideo = (path, filename) => {
   vid.src = path
   vid.style.visibility = 'visible'
   vid.style.zIndex = 1
-  img.src = ''
 }
 
 showImage = (path, filename) => {
