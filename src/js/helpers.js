@@ -33,10 +33,18 @@ exports.transform = (value = 1, increment = .05) => {
     reset: () => {
       size = value
       rotation = 0
+      
       img.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`
-      vid.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`
+      img.style.height = "100%"
+      img.style.width = "100%"
       img.style.top = '50%'
       img.style.left = '50%'
+      
+      vid.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`
+      vid.style.height = "100%"
+      vid.style.width = "100%"
+      vid.style.top = '50%'
+      vid.style.left = '50%'
     }
   }
 }
