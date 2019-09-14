@@ -92,6 +92,7 @@ document.ondrop = e => e.preventDefault()
 document.onmousewheel = e => (e.wheelDelta > 0) ? transform.up() : transform.down()
 
 img.onmousedown = e => e.which === 1 && helper.move(e)
+vid.onmousedown = e => e.which === 1 && helper.move(e)
 
 fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 

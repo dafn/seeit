@@ -96,6 +96,8 @@ exports.move = e => {
     pos4 = e.clientY
     img.style.top = (img.offsetTop - pos2) + "px"
     img.style.left = (img.offsetLeft - pos1) + "px"
+    vid.style.top = (img.offsetTop - pos2) + "px"
+    vid.style.left = (img.offsetLeft - pos1) + "px"
   }
 
   document.onmouseup = () => {
@@ -111,13 +113,14 @@ showVideo = (path, filename) => {
   vid.src = path
   vid.style.visibility = 'visible'
   vid.style.zIndex = 1
+  img.src = ''
 }
 
 showImage = (path, filename) => {
   title.innerText = filename
 
-  img.src = path
   vid.style.visibility = 'hidden'
+  img.src = path
   vid.style.zIndex = -1
   img.style.visibility = 'visible'
   vid.src = ''
