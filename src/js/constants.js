@@ -3,6 +3,7 @@ const TYPES_VIDEO = [
   '.webm',
   '.mp4',
   '.mkv',
+  '.wav'
 ]
 
 const TYPES_ALL = [
@@ -10,10 +11,13 @@ const TYPES_ALL = [
   '.jpeg',
   '.gif',
   '.png',
+  '.apng',
+  '.avif',
   '.tiff',
   '.svg',
   '.ico',
   '.webp',
+  '.bmp',
   ...TYPES_VIDEO
 ]
 
