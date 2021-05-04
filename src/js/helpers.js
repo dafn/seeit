@@ -5,6 +5,15 @@ let title = document.getElementById('title'),
   img = document.getElementById('image'),
   vid = document.getElementById('video')
 
+let visibleElement;
+
+let resetElementTransformations = (element, defaultSize, defaultRotation) => {
+  element.style.transform = `translate(-50%, -50%) scale(${defaultSize}) rotate(${defaultRotation}deg)`
+  element.style.height = "100%"
+  element.style.width = "100%"
+  element.style.top = '50%'
+  element.style.left = '50%'
+}
 
 exports.transform = (value = 1, increment = .05) => {
   let size = value, rotation = 0
@@ -15,36 +24,22 @@ exports.transform = (value = 1, increment = .05) => {
     },
     up: () => {
       size += increment
-      vid.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`
-      img.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`
+      visibleElement.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`
     },
     down: () => {
       size -= increment
-      vid.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`
-      img.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`
+      visibleElement.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`
 
     },
     rotate: direction => {
-      if (img.style.visibility === 'visible')
-        img.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation += 90 * direction}deg)`
-      else
-        vid.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation += 90 * direction}deg)`
+      visibleElement.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation += 90 * direction}deg)`
     },
     reset: () => {
       size = value
       rotation = 0
-      
-      img.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`
-      img.style.height = "100%"
-      img.style.width = "100%"
-      img.style.top = '50%'
-      img.style.left = '50%'
-      
-      vid.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`
-      vid.style.height = "100%"
-      vid.style.width = "100%"
-      vid.style.top = '50%'
-      vid.style.left = '50%'
+
+      resetElementTransformations(img, size, rotation)
+      resetElementTransformations(vid, size, rotation)
     }
   }
 }
@@ -72,8 +67,8 @@ exports.iterate = (files, path, dirname, transform, direction) => {
   while (TYPES_ALL.indexOf(path.extname(file).toLowerCase()) === -1)
 
   TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1 ?
-    showVideo(`${dirname}${file}`, file) :
-    showImage(`${dirname}${file}`, file)
+    exports.showVideo(`${dirname}${file}`, file) :
+    exports.showImage(`${dirname}${file}`, file)
 
   transform.reset()
   return file
@@ -102,10 +97,8 @@ exports.move = e => {
     pos2 = pos4 - e.clientY
     pos3 = e.clientX
     pos4 = e.clientY
-    img.style.top = (img.offsetTop - pos2) + "px"
-    img.style.left = (img.offsetLeft - pos1) + "px"
-    vid.style.top = (img.offsetTop - pos2) + "px"
-    vid.style.left = (img.offsetLeft - pos1) + "px"
+    visibleElement.style.top = (visibleElement.offsetTop - pos2) + "px"
+    visibleElement.style.left = (visibleElement.offsetLeft - pos1) + "px"
   }
 
   document.onmouseup = () => {
@@ -114,16 +107,18 @@ exports.move = e => {
   }
 }
 
-showVideo = (path, filename) => {
+exports.showVideo = (path, filename) => {
   title.innerText = filename
 
   img.style.visibility = 'hidden'
   vid.src = path
   vid.style.visibility = 'visible'
   vid.style.zIndex = 1
+
+  visibleElement = vid
 }
 
-showImage = (path, filename) => {
+exports.showImage = (path, filename) => {
   title.innerText = filename
 
   vid.style.visibility = 'hidden'
@@ -131,4 +126,6 @@ showImage = (path, filename) => {
   vid.style.zIndex = -1
   img.style.visibility = 'visible'
   vid.src = ''
+
+  visibleElement = img
 }

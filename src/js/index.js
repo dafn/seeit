@@ -9,6 +9,7 @@ const remote = require('electron').remote,
 const img = document.getElementById('image'),
 	vid = document.getElementById('video'),
 	title = document.getElementById('title'),
+	headline = document.querySelector("h1"),
 	dirname = path.dirname(sharedObj.filepath) + '/',
 	transform = helper.transform()
 
@@ -16,27 +17,28 @@ let first = true,
 	file = path.basename(sharedObj.filepath)
 
 if (sharedObj.platform == 'win32') {
-	const titlebarButtons = document.getElementById('win-titlebar-btns')
+	const titlebarButtons = document.getElementById('win-titlebar-btn-container')
 
 	titlebarButtons.style.visibility = 'visible'
 	titlebarButtons.innerHTML = `
-			<button id="min-btn" class="windows_toolbar_buttons">-</button>
-			<button id="max-btn" class="windows_toolbar_buttons">+</button>
-			<button id="close-btn" class="windows_toolbar_buttons">x</button>
+			<button id="min-btn" class="win-titlebar-btn">-</button>
+			<button id="max-btn" class="win-titlebar-btn">+</button>
+			<button id="close-btn" class="win-titlebar-btn">x</button>
 		`
 	document.getElementById("close-btn").addEventListener("click", e => win.close())
 	document.getElementById("min-btn").addEventListener("click", e => win.minimize())
 	document.getElementById("max-btn").addEventListener("click", e =>
 		win.isMaximized() ? win.unmaximize() : win.maximize()
 	)
+
+	document.getElementById('titlebar').classList.add("windows")
 }
 
-if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
-	title.innerText = file
+title.innerText = file
+headline.innerText = dirname
 
-	vid.src = `${dirname}${file}`
-	vid.style.visibility = 'visible'
-	vid.style.zIndex = '1'
+if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
+	helper.showVideo(`${dirname}${file}`, file)
 
 	vid.onloadeddata = () => {
 		if (first) {
@@ -57,10 +59,7 @@ if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
 		}
 	}
 } else {
-	title.innerText = file
-
-	img.src = `${dirname}${file}`
-	img.style.visibility = 'visible'
+	helper.showImage(`${dirname}${file}`, file)
 
 	img.onload = () => {
 		if (first) {
@@ -94,11 +93,11 @@ document.onmousewheel = e => (e.wheelDelta > 0) ? transform.up() : transform.dow
 img.onmousedown = e => e.which === 1 && helper.move(e)
 vid.onmousedown = e => e.which === 1 && helper.move(e)
 
-fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
+fs.readdir(dirname, (err, content) => {
 
 	content.sort((a, b) =>
-		fs.statSync(dirname + '/' + b).mtime.getTime() -
-		fs.statSync(dirname + '/' + a).mtime.getTime()
+		fs.statSync(dirname + b).mtime.getTime() -
+		fs.statSync(dirname + a).mtime.getTime()
 	)
 
 	const files = helper.iterator(content, content.indexOf(file))
@@ -121,11 +120,13 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 			case 'KeyS':
 			case 'ArrowDown':
 				return transform.down()
+			case 'KeyT':
+				return headline.classList.toggle("show-headline")
 			case 'Backspace':
 			case 'Delete':
 				files.remove(`${dirname}${file}`)
 				return file = helper.iterate(files, path, dirname, transform, 1)
-			case 'Tab': 
+			case 'Tab':
 				e.preventDefault()
 				return win.isMaximized() ? win.unmaximize() : win.maximize()
 			case 'Escape': return win.close()
@@ -135,7 +136,7 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 	}
 
 	document.onmousedown = ({ which }) => {
-		switch(which) {
+		switch (which) {
 			case 5: return file = helper.iterate(files, path, dirname, transform, 1)
 			case 4: return file = helper.iterate(files, path, dirname, transform, -1)
 		}
