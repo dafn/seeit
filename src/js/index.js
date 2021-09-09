@@ -16,7 +16,8 @@ let first = true,
 	file = path.basename(sharedObj.filepath)
 
 if (sharedObj.platform == 'win32') {
-	const titlebarButtons = document.getElementById('win-titlebar-btns')
+	const titlebarButtons = document.getElementById('win-titlebar-btns'),
+		titlebar = document.getElementById('titlebar')
 
 	titlebarButtons.style.visibility = 'visible'
 	titlebarButtons.innerHTML = `
@@ -24,6 +25,9 @@ if (sharedObj.platform == 'win32') {
 			<button id="max-btn" class="windows_toolbar_buttons">+</button>
 			<button id="close-btn" class="windows_toolbar_buttons">x</button>
 		`
+
+	titlebar.classList.add("win")
+	
 	document.getElementById("close-btn").addEventListener("click", e => win.close())
 	document.getElementById("min-btn").addEventListener("click", e => win.minimize())
 	document.getElementById("max-btn").addEventListener("click", e =>
@@ -125,7 +129,7 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 			case 'Delete':
 				files.remove(`${dirname}${file}`)
 				return file = helper.iterate(files, path, dirname, transform, 1)
-			case 'Tab': 
+			case 'Tab':
 				e.preventDefault()
 				return win.isMaximized() ? win.unmaximize() : win.maximize()
 			case 'Escape': return win.close()
@@ -135,7 +139,7 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
 	}
 
 	document.onmousedown = ({ which }) => {
-		switch(which) {
+		switch (which) {
 			case 5: return file = helper.iterate(files, path, dirname, transform, 1)
 			case 4: return file = helper.iterate(files, path, dirname, transform, -1)
 		}

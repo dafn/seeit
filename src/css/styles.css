@@ -41,6 +41,10 @@ img {
 	-webkit-app-region: drag;
 }
 
+#titlebar.win {
+	height: 30px;
+}
+
 #win-titlebar-btns {
 	-webkit-app-region: no-drag;
 	display: flex;
