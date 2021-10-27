@@ -1,6 +1,11 @@
-const remote = require("electron").remote;
-const win = remote.getCurrentWindow();
-const sharedObj = remote.getGlobal("sharedObj");
+const { ipcRenderer } = require("electron");
+const { initIpcRenderer } = require("../js/ipc");
+
+const win = initIpcRenderer();
+const sharedObj = {
+  filepath: win.filepath(),
+  platform: win.platform(),
+};
 const path = require("path");
 const fs = require("fs");
 const helper = require("../js/helpers");
@@ -59,8 +64,8 @@ if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
         hs: window.screen.availHeight,
       });
 
-      win.setSize(size.w | 0, size.h | 0);
-      win.setMaximumSize(window.screen.availWidth, window.screen.availHeight);
+      win.setSize([size.w | 0, size.h | 0]);
+      win.setMaximumSize([window.screen.availWidth, window.screen.availHeight]);
       win.center();
 
       transform.reset();
@@ -85,8 +90,8 @@ if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
         hs: window.screen.availHeight,
       });
 
-      win.setSize(size.w | 0, size.h | 0);
-      win.setMaximumSize(window.screen.availWidth, window.screen.availHeight);
+      win.setSize([size.w | 0, size.h | 0]);
+      win.setMaximumSize([window.screen.availWidth, window.screen.availHeight]);
       win.center();
 
       transform.reset();
@@ -97,7 +102,7 @@ if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
 
   img.onerror = (e) => {
     alert(`Error opening file: \n\n${dirname}${file}`);
-    win.close();
+    // win.close();
   };
 }
 
