@@ -1,46 +1,45 @@
 {
-	"name": "seeit",
-	"version": "1.0.0",
-	"description": "image viewer",
-	"main": "index.js",
-	"build": {
-		"appId": "seeit",
-		"mac": {
-			"category": "utility",
-			"icon": "icon.icns"
-		}
-	},
-	"win": {
-		"icon": "./build/icon.ico"
-	},
-	"scripts": {
-		"test": "jest",
-		"start": "set NODE_ENV=development&& electron .",
-		"pack": "electron-builder --dir",
-		"dist": "electron-builder"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/dafn/seeit.git"
-	},
-	"keywords": [
-		"image",
-		"gif",
-		"WebM"
-	],
-	"author": "Daniel Nilsen",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/dafn/seeit/issues"
-	},
-	"homepage": "https://github.com/dafn/seeit#readme",
-	"dependencies": {
-		"trash": "^4.2.1"
-	},
-	"devDependencies": {
-		"electron": "^6.0.7",
-		"electron-builder": "^21.2.0",
-		"jest": "^24.9.0",
-		"spectron": "^8.0.0"
-	}
+  "name": "seeit",
+  "version": "1.0.0",
+  "description": "image viewer",
+  "main": "index.js",
+  "build": {
+    "appId": "seeit",
+    "mac": {
+      "category": "utility",
+      "icon": "icon.icns"
+    }
+  },
+  "win": {
+    "icon": "./build/icon.ico"
+  },
+  "scripts": {
+    "test": "jest",
+    "start": "NODE_ENV=development electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dafn/seeit.git"
+  },
+  "keywords": [
+    "image",
+    "gif",
+    "WebM"
+  ],
+  "author": "Daniel Nilsen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dafn/seeit/issues"
+  },
+  "homepage": "https://github.com/dafn/seeit#readme",
+  "dependencies": {
+    "trash": "^4.2.1"
+  },
+  "devDependencies": {
+    "electron": "^15.3.0",
+    "electron-builder": "^22.13.1",
+    "spectron": "^15.0.0"
+  }
 }
