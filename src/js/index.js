@@ -6,6 +6,7 @@ const sharedObj = {
   filepath: win.filepath(),
   platform: win.platform(),
 };
+
 const path = require("path");
 const fs = require("fs");
 const helper = require("../js/helpers");

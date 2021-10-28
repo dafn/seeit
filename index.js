@@ -5,10 +5,8 @@ const { INDEX } = require("./src/js/constants");
 let windows = [];
 
 createWindow = (env) => {
-  console.log("hi there");
-
   if (process.platform == "win32") {
-    const env = {
+    env = {
       filepath: process.argv[INDEX],
       platform: process.platform,
     };
@@ -31,14 +29,11 @@ createWindow = (env) => {
 
     initIpcMain(ipcMain, window, env);
   } else {
-    console.log("hi there 2");
-
     if (process.env.NODE_ENV === "development") {
       env = {
         filepath: process.argv[INDEX],
         platform: process.platform,
       };
-      console.log("hi there 3");
     }
 
     let window = new BrowserWindow({
@@ -48,16 +43,14 @@ createWindow = (env) => {
       titleBarStyle: "hidden",
       darkTheme: true,
       backgroundColor: "#21252B",
-      show: true, //process.env.NODE_ENV === "development",
+      show: process.env.NODE_ENV === "development",
       webPreferences: { nodeIntegration: true, contextIsolation: false },
     });
 
     window.loadURL(`file://${__dirname}/src/view/index.html`);
     window.on("closed", () => (window = null));
 
-    console.log("hi there 4");
-
-    /* process.env.NODE_ENV === "development" &&*/ window.webContents.openDevTools();
+    process.env.NODE_ENV === "development" && window.webContents.openDevTools();
 
     windows.push(window);
 
@@ -68,14 +61,14 @@ createWindow = (env) => {
 if (process.platform == "darwin") {
   app.on("will-finish-launching", () => {
     app.on("open-file", (event, path) => {
-      console.log("hello", event, path);
       event.preventDefault();
-      const env = { filepath: path, platform: "darwin" };
-      app.isReady() && createWindow(env);
+      app.whenReady().then(() => {
+        createWindow({ filepath: path, platform: "darwin" });
+      });
     });
   });
+} else {
+  app.on("ready", createWindow);
 }
-
-app.on("ready", createWindow);
 
 app.on("window-all-closed", app.quit);
