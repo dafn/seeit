@@ -54,6 +54,8 @@ createWindow = (env) => {
 
     windows.push(window);
 
+    env.nr = window.id;
+
     initIpcMain(ipcMain, window, env);
   }
 };
@@ -63,7 +65,7 @@ if (process.platform == "darwin" && process.env.NODE_ENV !== "development") {
     app.on("open-file", (event, path) => {
       event.preventDefault();
       app.whenReady().then(() => {
-        createWindow({ filepath: path, platform: "darwin"});
+        createWindow({ filepath: path, platform: "darwin" });
       });
     });
   });
