@@ -1,15 +1,13 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
-const { initIpcMain } = require("./src/js/ipc");
+// const { initIpcMain } = require("./src/js/ipc");
 const { INDEX } = require("./src/js/constants");
 
 let windows = [];
+global.seeit = {};
 
 createWindow = (env) => {
   if (process.platform == "win32") {
-    env = {
-      filepath: process.argv[INDEX],
-      platform: process.platform,
-    };
+    global.seeit.filepath = process.argv[INDEX];
 
     let window = new BrowserWindow({
       minWidth: 128,
@@ -26,14 +24,9 @@ createWindow = (env) => {
     window.on("closed", () => (win = null));
 
     process.env.NODE_ENV === "development" && window.webContents.openDevTools();
-
-    initIpcMain(ipcMain, window, env);
   } else {
     if (process.env.NODE_ENV === "development") {
-      env = {
-        filepath: process.argv[INDEX],
-        platform: process.platform,
-      };
+      global.seeit.filepath = process.argv[INDEX];
     }
 
     let window = new BrowserWindow({
@@ -48,15 +41,24 @@ createWindow = (env) => {
     });
 
     window.loadURL(`file://${__dirname}/src/view/index.html`);
-    window.on("closed", () => (window = null));
+
+    window.onbeforeunload = (e) => {
+      global.seeit.closingWindow = windows.findIndex(
+        (win) => win && !window.isDestroyed() && win.id === window.id
+      );
+      return true;
+    };
+
+    window.on("closed", (event) => {
+      if (global.seeit.closingWindow) {
+        windows[global.seeit.closingWindow] = null;
+      }
+      window = null;
+    });
 
     process.env.NODE_ENV === "development" && window.webContents.openDevTools();
 
     windows.push(window);
-
-    env.nr = window.id;
-
-    initIpcMain(ipcMain, window, env);
   }
 };
 
@@ -65,7 +67,8 @@ if (process.platform == "darwin" && process.env.NODE_ENV !== "development") {
     app.on("open-file", (event, path) => {
       event.preventDefault();
       app.whenReady().then(() => {
-        createWindow({ filepath: path, platform: "darwin" });
+        global.seeit.filepath = path;
+        createWindow();
       });
     });
   });
@@ -74,3 +77,23 @@ if (process.platform == "darwin" && process.env.NODE_ENV !== "development") {
 }
 
 app.on("window-all-closed", app.quit);
+
+ipcMain.on(`remote`, (event, arg) => {
+  const [command, ...args] = arg;
+  const window = windows.find(
+    (window) => window && !window.isDestroyed() && window.id === event.sender.id
+  );
+
+  switch (command) {
+    case "filepath":
+      event.returnValue = global.seeit.filepath;
+      break;
+    case "platform":
+      event.returnValue = process.platform;
+      break;
+    default:
+      window[command](...args);
+      event.returnValue = null;
+      break;
+  }
+});

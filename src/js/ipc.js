@@ -80,19 +80,19 @@ exports.initIpcMain = (ipc, window, env) => {
   */
 };
 
-exports.initIpcRenderer = (nr = 1) => {
+exports.initIpcRenderer = (ipc = "remote") => {
   return {
-    show: () => ipcRenderer.sendSync(`${nr}`, ["show"]),
-    close: () => ipcRenderer.sendSync(`${nr}`, ["close"]),
-    center: () => ipcRenderer.sendSync(`${nr}`, ["center"]),
-    setSize: (arg) => ipcRenderer.sendSync(`${nr}`, ["setSize", ...arg]),
+    show: () => ipcRenderer.sendSync(`${ipc}`, ["show"]),
+    close: () => ipcRenderer.sendSync(`${ipc}`, ["close"]),
+    center: () => ipcRenderer.sendSync(`${ipc}`, ["center"]),
+    setSize: (arg) => ipcRenderer.sendSync(`${ipc}`, ["setSize", ...arg]),
     setMaximumSize: (arg) =>
-      ipcRenderer.sendSync(`${nr}`, ["setMaximumSize", ...arg]),
-    maximize: () => ipcRenderer.sendSync(`${nr}`, ["maximize"]),
-    isMaximized: () => ipcRenderer.sendSync(`${nr}`, ["isMaximized"]),
-    unmaximize: () => ipcRenderer.sendSync(`${nr}`, ["unmaximize"]),
-    filepath: () => ipcRenderer.sendSync(`${nr}`, ["filepath"]),
-    platform: () => ipcRenderer.sendSync(`${nr}`, ["platform"]),
+      ipcRenderer.sendSync(`${ipc}`, ["setMaximumSize", ...arg]),
+    maximize: () => ipcRenderer.sendSync(`${ipc}`, ["maximize"]),
+    isMaximized: () => ipcRenderer.sendSync(`${ipc}`, ["isMaximized"]),
+    unmaximize: () => ipcRenderer.sendSync(`${ipc}`, ["unmaximize"]),
+    filepath: () => ipcRenderer.sendSync(`${ipc}`, ["filepath"]),
+    platform: () => ipcRenderer.sendSync(`${ipc}`, ["platform"]),
   };
 };
 
