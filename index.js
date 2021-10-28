@@ -14,6 +14,7 @@ createWindow = (env) => {
     minHeight: 128,
     autoHideMenuBar: true,
     frame: !process.platform == "win32",
+    titleBarStyle: process.platform == "win32" ? "default" : "hidden",
     darkTheme: true,
     backgroundColor: "#21252B",
     show: process.env.NODE_ENV === "development",
