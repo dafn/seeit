@@ -58,12 +58,12 @@ createWindow = (env) => {
   }
 };
 
-if (process.platform == "darwin") {
+if (process.platform == "darwin" && process.env.NODE_ENV !== "development") {
   app.on("will-finish-launching", () => {
     app.on("open-file", (event, path) => {
       event.preventDefault();
       app.whenReady().then(() => {
-        createWindow({ filepath: path, platform: "darwin" });
+        createWindow({ filepath: path, platform: "darwin"});
       });
     });
   });
