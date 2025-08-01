@@ -1,4 +1,3 @@
-const { ipcRenderer } = require("electron");
 const { initIpcRenderer } = require("../js/ipc");
 
 const win = initIpcRenderer();
@@ -10,16 +9,17 @@ const sharedObj = {
 const path = require("path");
 const fs = require("fs");
 const helper = require("../js/helpers");
-const { TYPES_VIDEO } = require("../js/constants");
+const { ALL_VIDEO_TYPES: TYPES_VIDEO } = require("../js/constants");
 
 const img = document.getElementById("image");
 const vid = document.getElementById("video");
 const title = document.getElementById("title");
+const label = document.getElementById("label");
 const dirname = path.dirname(sharedObj.filepath) + "/";
 const transform = helper.transform();
 
-let first = true,
-  file = path.basename(sharedObj.filepath);
+let first = true;
+let file = path.basename(sharedObj.filepath);
 
 if (sharedObj.platform == "win32") {
   const titlebarButtons = document.getElementById("win-titlebar-btns"),
@@ -49,6 +49,7 @@ if (sharedObj.platform == "win32") {
 
 if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
   title.innerText = file;
+  label.innerText = file;
 
   vid.src = `${dirname}${file}`;
   vid.style.visibility = "visible";
@@ -76,6 +77,7 @@ if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
   };
 } else {
   title.innerText = file;
+  label.innerText = file;
 
   img.src = `${dirname}${file}`;
   img.style.visibility = "visible";
@@ -146,6 +148,10 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
       case "Delete":
         files.remove(`${dirname}${file}`);
         return (file = helper.iterate(files, path, dirname, transform, 1));
+      case "Space":
+        return label.style.opacity === "1"
+          ? (label.style.opacity = "0")
+          : (label.style.opacity = "1");
       case "Tab":
         e.preventDefault();
         return win.isMaximized() ? win.unmaximize() : win.maximize();
@@ -156,12 +162,12 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
     }
   };
 
-  document.onmousedown = ({ which }) => {
-    switch (which) {
-      case 5:
-        return (file = helper.iterate(files, path, dirname, transform, 1));
+  document.onmousedown = ({ button }) => {
+    switch (button) {
       case 4:
         return (file = helper.iterate(files, path, dirname, transform, -1));
+      case 5:
+        return (file = helper.iterate(files, path, dirname, transform, 1));
     }
   };
 });

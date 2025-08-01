@@ -1,26 +1,35 @@
-const TYPES_VIDEO = [
-  '.ogg',
-  '.webm',
-  '.mp4',
-  '.mkv',
-]
+const ALL_VIDEO_TYPES = [
+  ".ogg",
+  ".webm",
+  ".mp4",
+  ".mkv",
+  ".avi",
+  ".mov",
+  ".flv",
+  ".wmv",
+  ".mpeg",
+  ".mpg",
+];
 
-const TYPES_ALL = [
-  '.jpg',
-  '.jpeg',
-  '.gif',
-  '.png',
-  '.tiff',
-  '.svg',
-  '.ico',
-  '.webp',
-  ...TYPES_VIDEO
-]
+const ALL_IMAGE_TYPES = [
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".gif",
+  ".bmp",
+  ".webp",
+  ".apng",
+  ".svg",
+  ".ico",
+  ".tiff",
+];
 
-const INDEX = process.env.NODE_ENV === 'development' ? 2 : 1
+const ALL_TYPES = [...ALL_IMAGE_TYPES, ...ALL_VIDEO_TYPES];
+
+const INDEX = process.env.NODE_ENV === "development" ? 2 : 1;
 
 module.exports = {
-  TYPES_VIDEO,
-  TYPES_ALL,
-  INDEX
-}
+  ALL_VIDEO_TYPES,
+  ALL_TYPES,
+  INDEX,
+};

@@ -1,3 +1,5 @@
+const { ipcRenderer } = require("electron");
+
 exports.initIpcRenderer = (ipc = "remote") => {
   return {
     show: () => ipcRenderer.sendSync(ipc, ["show"]),

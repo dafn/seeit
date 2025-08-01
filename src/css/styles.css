@@ -1,84 +1,106 @@
 html {
-	background-color: rgb(16, 19, 22);
+  background-color: rgb(16, 19, 22);
   align-content: center;
-	overflow: hidden;
-	height: 100vh;
+  overflow: hidden;
+  height: 100vh;
 }
 
 video {
-	max-height:100%;
+  max-height: 100%;
   max-width: 100%;
-	object-fit: contain;
-	margin: auto;
-	visibility: hidden;
+  object-fit: contain;
+  margin: auto;
+  visibility: hidden;
   position: absolute;
-	left: 50%;
-	top: 50%;
-	transform: translate( -50%, -50%);
-	z-index: -1;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
 }
 
 img {
   object-fit: contain;
-	margin: auto;
-	visibility: hidden;
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	z-index: 1;
-	transform: translate( -50%, -50%);
+  margin: auto;
+  visibility: hidden;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+}
+
+label {
+  opacity: 0;
+  top: 0;
+  text-align: center;
+  font-size: small;
+  font-weight: bold;
+  color: rgb(235, 235, 235);
+  background: rgba(0, 0, 0, 0.4);
+  padding: 0.25rem;
+  width: 100%;
+  height: -webkit-fill-available;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  transition: opacity 0.05s ease-in-out;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 #titlebar {
-	height:22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 22px;
   width: 100vw;
-	margin: 0;
-	left: 0;
-	top: 0;
+  margin: 0;
+  left: 0;
+  top: 0;
   position: absolute;
-	z-index: 2;
-	user-select: none;
-	-webkit-app-region: drag;
+  z-index: 2;
+  user-select: none;
+  -webkit-app-region: drag;
 }
 
 #titlebar.win {
-	height: 30px;
+  height: 30px;
 }
 
 #win-titlebar-btns {
-	-webkit-app-region: no-drag;
-	display: flex;
-	visibility: hidden;
-	position: fixed;
-	top: 0px;
-	right: 0px;
+  -webkit-app-region: no-drag;
+  display: flex;
+  visibility: hidden;
+  position: fixed;
+  top: 0px;
+  right: 0px;
 }
 
 #close-btn {
-	background: rgb(199, 13, 0);
-	color: white;
+  background: rgb(199, 13, 0);
+  color: white;
 }
 
-#max-btn, #min-btn {
-	background: none;
-	color: rgb(255, 255, 255);
+#max-btn,
+#min-btn {
+  background: none;
+  color: rgb(255, 255, 255);
 }
 
 :focus {
-	outline: none;
+  outline: none;
 }
 
 #close-btn:hover {
-	background: rgb(255, 17, 0);
+  background: rgb(255, 17, 0);
 }
 
-#min-btn:hover, #max-btn:hover {
-	background: rgb(236, 236, 236);
-	color: rgb(36, 36, 36);
+#min-btn:hover,
+#max-btn:hover {
+  background: rgb(236, 236, 236);
+  color: rgb(36, 36, 36);
 }
 
 .windows_toolbar_buttons {
-	height: 30px;
-	width: 30px;
-	border-style: none;
+  height: 30px;
+  width: 30px;
+  border-style: none;
 }

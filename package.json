@@ -1,6 +1,6 @@
 {
   "name": "seeit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "image viewer",
   "main": "index.js",
   "build": {
@@ -35,11 +35,10 @@
   },
   "homepage": "https://github.com/dafn/seeit#readme",
   "dependencies": {
-    "trash": "^6.0.0"
+    "trash": "^9.0.0"
   },
   "devDependencies": {
-    "electron": "^28.3.2",
-    "electron-builder": "^22.13.1",
-    "spectron": "^15.0.0"
+    "electron": "^37.2.5",
+    "electron-builder": "^26.0.12"
   }
 }
