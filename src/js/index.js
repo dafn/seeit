@@ -9,6 +9,7 @@ const sharedObj = {
 const path = require("path");
 const fs = require("fs");
 const helper = require("../js/helpers");
+const { pathToFileURL } = require("url");
 const { ALL_VIDEO_TYPES: TYPES_VIDEO } = require("../js/constants");
 
 const img = document.getElementById("image");
@@ -51,7 +52,7 @@ if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
   title.innerText = file;
   label.innerText = file;
 
-  vid.src = `${dirname}${file}`;
+  vid.src = pathToFileURL(dirname + file).href;
   vid.style.visibility = "visible";
   vid.style.zIndex = "1";
 
@@ -79,7 +80,7 @@ if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
   title.innerText = file;
   label.innerText = file;
 
-  img.src = `${dirname}${file}`;
+  img.src = pathToFileURL(dirname + file).href;
   img.style.visibility = "visible";
 
   img.onload = () => {

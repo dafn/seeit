@@ -3,6 +3,8 @@ const {
   ALL_VIDEO_TYPES: TYPES_VIDEO,
 } = require("./constants");
 
+const { pathToFileURL } = require("url");
+
 let title = document.getElementById("title");
 let label = document.getElementById("label");
 let img = document.getElementById("image");
@@ -121,7 +123,7 @@ showVideo = (path, filename) => {
   label.innerText = filename;
 
   img.style.visibility = "hidden";
-  vid.src = path;
+  vid.src = pathToFileURL(path).href;
   vid.style.visibility = "visible";
   vid.style.zIndex = 1;
 };
@@ -131,7 +133,7 @@ showImage = (path, filename) => {
   label.innerText = filename;
 
   vid.style.visibility = "hidden";
-  img.src = path;
+  img.src = pathToFileURL(path).href;
   vid.style.zIndex = -1;
   img.style.visibility = "visible";
   vid.src = "";
