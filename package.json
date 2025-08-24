@@ -34,9 +34,6 @@
     "url": "https://github.com/dafn/seeit/issues"
   },
   "homepage": "https://github.com/dafn/seeit#readme",
-  "dependencies": {
-    "trash": "^9.0.0"
-  },
   "devDependencies": {
     "electron": "^37.2.5",
     "electron-builder": "^26.0.12"

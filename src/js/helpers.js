@@ -1,8 +1,7 @@
 const {
-    ALL_TYPES: TYPES_ALL,
-    ALL_VIDEO_TYPES: TYPES_VIDEO,
-  } = require("./constants"),
-  trash = require("trash");
+  ALL_TYPES: TYPES_ALL,
+  ALL_VIDEO_TYPES: TYPES_VIDEO,
+} = require("./constants");
 
 let title = document.getElementById("title");
 let label = document.getElementById("label");
@@ -62,10 +61,10 @@ exports.iterator = (array, index = 0) => {
       array[(nextIndex = (nextIndex + array.length + 1) % array.length)],
     prev: () =>
       array[(nextIndex = (nextIndex + array.length - 1) % array.length)],
-    remove: (file) =>
-      trash(file).then(() => {
-        array.splice((nextIndex -= 1), 1);
-      }),
+    remove: async (file) => {
+      require("fs").rmSync(file, { recursive: true, force: true });
+      array.splice((nextIndex -= 1), 1);
+    },
   };
 };
 
