@@ -4,15 +4,17 @@ const sharedObj = {
   platform: win.platform(),
 };
 
-const img = document.getElementById("image");
-const vid = document.getElementById("video");
+const imageEl = document.getElementById("image");
+const videoEl = document.getElementById("video");
 const title = document.getElementById("title");
 const label = document.getElementById("label");
-const dirname = path.dirname(sharedObj.filepath) + "/";
+const dirname = sharedObj.filepath
+  ? path.dirname(sharedObj.filepath) + "/"
+  : "";
 const transform = helper.transform();
 
 let first = true;
-let file = path.basename(sharedObj.filepath);
+let file = sharedObj.filepath ? path.basename(sharedObj.filepath) : "";
 
 if (sharedObj.platform == "win32") {
   const titlebarButtons = document.getElementById("win-titlebar-btns"),
@@ -29,32 +31,44 @@ if (sharedObj.platform == "win32") {
 
   document
     .getElementById("close-btn")
-    .addEventListener("click", (e) => win.close());
+    .addEventListener("click", (e) => {
+      win.close();
+      e.currentTarget.blur();
+    });
   document
     .getElementById("min-btn")
-    .addEventListener("click", (e) => win.minimize());
+    .addEventListener("click", (e) => {
+      win.minimize();
+      e.currentTarget.blur();
+    });
   document
     .getElementById("max-btn")
-    .addEventListener("click", (e) =>
-      win.isMaximized() ? win.unmaximize() : win.maximize()
-    );
+    .addEventListener("click", (e) => {
+      win.isMaximized() ? win.unmaximize() : win.maximize();
+      e.currentTarget.blur();
+    });
 }
 
-if (ALL_VIDEO_TYPES.indexOf(path.extname(file).toLowerCase()) !== -1) {
+if (!sharedObj.filepath) {
+  title.innerText = "seeit";
+  label.innerText = "No file opened";
+  label.style.opacity = "1";
+  win.show();
+} else if (ALL_VIDEO_TYPES.indexOf(path.extname(file).toLowerCase()) !== -1) {
   title.innerText = file;
   label.innerText = file;
 
-  vid.src = pathToFileURL(dirname + file);
-  vid.style.visibility = "visible";
-  vid.style.zIndex = "1";
+  videoEl.src = pathToFileURL(dirname + file);
+  videoEl.style.visibility = "visible";
+  videoEl.style.zIndex = "1";
 
-  vid.onloadeddata = () => {
+  videoEl.onloadeddata = () => {
     if (first) {
       first = false;
 
       const size = helper.setWindowSize({
-        wi: vid.videoWidth,
-        hi: vid.videoHeight,
+        wi: videoEl.videoWidth,
+        hi: videoEl.videoHeight,
         ws: window.screen.availWidth,
         hs: window.screen.availHeight,
       });
@@ -72,16 +86,16 @@ if (ALL_VIDEO_TYPES.indexOf(path.extname(file).toLowerCase()) !== -1) {
   title.innerText = file;
   label.innerText = file;
 
-  img.src = pathToFileURL(dirname + file);
-  img.style.visibility = "visible";
+  imageEl.src = pathToFileURL(dirname + file);
+  imageEl.style.visibility = "visible";
 
-  img.onload = () => {
+  imageEl.onload = () => {
     if (first) {
       first = false;
 
       const size = helper.setWindowSize({
-        wi: img.naturalWidth,
-        hi: img.naturalHeight,
+        wi: imageEl.naturalWidth,
+        hi: imageEl.naturalHeight,
         ws: window.screen.availWidth,
         hs: window.screen.availHeight,
       });
@@ -96,13 +110,13 @@ if (ALL_VIDEO_TYPES.indexOf(path.extname(file).toLowerCase()) !== -1) {
     }
   };
 
-  vid.onerror = () => {
+  videoEl.onerror = () => {
     win.show();
     alert(`Error opening file: \n\n${dirname}${file}`);
     win.close();
   };
 
-  img.onerror = (e) => {
+  imageEl.onerror = (e) => {
     win.show();
     alert(`Error opening file: \n\n${dirname}${file}`);
     win.close();
@@ -112,59 +126,110 @@ if (ALL_VIDEO_TYPES.indexOf(path.extname(file).toLowerCase()) !== -1) {
 document.ondragover = (e) => e.preventDefault();
 document.ondrop = (e) => e.preventDefault();
 document.addEventListener("wheel", (e) =>
-  e.deltaY < 0 ? transform.up() : transform.down()
+  e.deltaY < 0 ? transform.up() : transform.down(),
 );
 
-img.onmousedown = (e) => e.which === 1 && helper.move(e);
-vid.onmousedown = (e) => e.which === 1 && helper.move(e);
+imageEl.onmousedown = (e) => e.which === 1 && helper.move(e);
+videoEl.onmousedown = (e) => e.which === 1 && helper.move(e);
 
-fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
-  content.sort((a, b) => fs.mtime(dirname + b) - fs.mtime(dirname + a));
+// Clicking the native controls focuses the <video>; blur it so
+// Space/arrow keys keep driving the app shortcuts, not the media element.
+videoEl.addEventListener("click", () => videoEl.blur());
 
-  const files = helper.iterator(content, content.indexOf(file));
+if (sharedObj.filepath) {
+  fs.listDir(path.dirname(sharedObj.filepath))
+    .then((content) => {
+      const files = helper.iterator(content, content.indexOf(file));
 
-  title.innerText = file;
+      helper.prefetch(files, path, dirname);
 
-  document.onkeydown = (e) => {
-    switch (e.code) {
-      case "KeyD":
-        return transform.rotate(1);
-      case "ArrowRight":
-        return (file = helper.iterate(files, path, dirname, transform, 1, file));
-      case "KeyA":
-        return transform.rotate(-1);
-      case "ArrowLeft":
-        return (file = helper.iterate(files, path, dirname, transform, -1, file));
-      case "KeyW":
-      case "ArrowUp":
-        return transform.up();
-      case "KeyS":
-      case "ArrowDown":
-        return transform.down();
-      case "Backspace":
-      case "Delete":
-        files.remove(`${dirname}${file}`);
-        return (file = helper.iterate(files, path, dirname, transform, 1, file));
-      case "Space":
-        return label.style.opacity === "1"
-          ? (label.style.opacity = "0")
-          : (label.style.opacity = "1");
-      case "Tab":
-        e.preventDefault();
-        return win.isMaximized() ? win.unmaximize() : win.maximize();
-      case "Escape":
-        return win.close();
-      default:
-        return;
-    }
-  };
+      title.innerText = file;
 
-  document.onmousedown = ({ button }) => {
-    switch (button) {
-      case 4:
-        return (file = helper.iterate(files, path, dirname, transform, -1, file));
-      case 5:
-        return (file = helper.iterate(files, path, dirname, transform, 1, file));
-    }
-  };
-});
+      document.onkeydown = (e) => {
+        // Cancel media-element defaults (seek/volume/play-pause) so these keys
+        // drive the app even when the <video> has focus.
+        if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Space"].includes(e.code)) {
+          e.preventDefault();
+        }
+        switch (e.code) {
+          case "KeyD":
+            return transform.rotate(1);
+          case "ArrowRight":
+            return (file = helper.iterate(
+              files,
+              path,
+              dirname,
+              transform,
+              1,
+              file,
+            ));
+          case "KeyA":
+            return transform.rotate(-1);
+          case "ArrowLeft":
+            return (file = helper.iterate(
+              files,
+              path,
+              dirname,
+              transform,
+              -1,
+              file,
+            ));
+          case "KeyW":
+          case "ArrowUp":
+            return transform.up();
+          case "KeyS":
+          case "ArrowDown":
+            return transform.down();
+          case "Backspace":
+          case "Delete":
+            files.remove(`${dirname}${file}`);
+            return (file = helper.iterate(
+              files,
+              path,
+              dirname,
+              transform,
+              1,
+              file,
+            ));
+          case "Space":
+            e.preventDefault(); // keep Space from re-clicking a focused titlebar button
+            return label.style.opacity === "1"
+              ? (label.style.opacity = "0")
+              : (label.style.opacity = "1");
+          case "Tab":
+            e.preventDefault();
+            return win.isMaximized() ? win.unmaximize() : win.maximize();
+          case "Escape":
+            return win.close();
+          default:
+            return;
+        }
+      };
+
+      document.onmousedown = ({ button }) => {
+        switch (button) {
+          case 4:
+            return (file = helper.iterate(
+              files,
+              path,
+              dirname,
+              transform,
+              -1,
+              file,
+            ));
+          case 5:
+            return (file = helper.iterate(
+              files,
+              path,
+              dirname,
+              transform,
+              1,
+              file,
+            ));
+        }
+      };
+    })
+    .catch(() => {
+      // folder unreadable - keep showing the current file, no navigation
+    });
+}

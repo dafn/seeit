@@ -14,15 +14,28 @@ contextBridge.exposeInMainWorld("seeit", {
 });
 
 contextBridge.exposeInMainWorld("path", {
-  dirname: (p) => path.dirname(p),
-  basename: (p) => path.basename(p),
-  extname: (p) => path.extname(p),
+  dirname: (filePath) => path.dirname(filePath),
+  basename: (filePath) => path.basename(filePath),
+  extname: (filePath) => path.extname(filePath),
 });
 
 contextBridge.exposeInMainWorld("fs", {
-  readdir: (p, cb) => fs.readdir(p, cb),
-  rmSync: (p) => fs.rmSync(p, { recursive: true, force: true }),
-  mtime: (p) => fs.statSync(p).mtime.getTime(),
+  rmSync: (filePath) => fs.rmSync(filePath, { recursive: true, force: true }),
+  // One parallel stat pass instead of a statSync per sort comparison.
+  // Returns names sorted by mtime, newest first; vanished files sort last.
+  listDir: async (dir) => {
+    const names = await fs.promises.readdir(dir);
+    const entries = await Promise.all(
+      names.map(async (name) => {
+        try {
+          return { name, mtime: (await fs.promises.stat(dir + "/" + name)).mtimeMs };
+        } catch {
+          return { name, mtime: 0 };
+        }
+      })
+    );
+    return entries.sort((a, b) => b.mtime - a.mtime).map((e) => e.name);
+  },
 });
 
-contextBridge.exposeInMainWorld("pathToFileURL", (p) => pathToFileURL(p).href);
+contextBridge.exposeInMainWorld("pathToFileURL", (filePath) => pathToFileURL(filePath).href);

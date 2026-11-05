@@ -9,16 +9,30 @@ global.seeit = {};
 
 nativeTheme.themeSource = "dark";
 
-const createWindow = (env) => {
+const gotSingleInstanceLock = app.requestSingleInstanceLock();
+
+if (!gotSingleInstanceLock) {
+  app.quit();
+}
+
+app.on("second-instance", (event, argv) => {
+  if (!gotSingleInstanceLock) {
+    return;
+  }
+  global.seeit.filepath = argv[INDEX] ?? null;
+  createWindow();
+});
+
+const createWindow = () => {
   if (process.platform == "win32" || process.env.NODE_ENV === "development") {
-    global.seeit.filepath = process.argv[INDEX];
+    global.seeit.filepath = process.argv[INDEX] ?? null;
   }
 
   let window = new BrowserWindow({
     minWidth: 128,
     minHeight: 128,
     autoHideMenuBar: true,
-    frame: !process.platform == "win32",
+    frame: process.platform != "win32",
     titleBarStyle: process.platform == "win32" ? "default" : "hidden",
     backgroundColor: "#21252B",
     show: process.env.NODE_ENV === "development",
@@ -32,23 +46,33 @@ const createWindow = (env) => {
 
   window.loadURL(pathToFileURL(path.join(__dirname, "src/view/index.html")).href);
 
-  process.env.NODE_ENV === "development" && window.webContents.openDevTools();
-
   windows.push(window);
 };
+
+let opened = false;
 
 if (process.platform == "darwin" && process.env.NODE_ENV !== "development") {
   app.on("will-finish-launching", () => {
     app.on("open-file", (event, path) => {
       event.preventDefault();
+      opened = true;
       app.whenReady().then(() => {
         global.seeit.filepath = path;
         createWindow();
       });
     });
   });
+  app.on("ready", () => {
+    if (!opened && gotSingleInstanceLock) {
+      createWindow();
+    }
+  });
 } else {
-  app.on("ready", createWindow);
+  app.on("ready", () => {
+    if (gotSingleInstanceLock) {
+      createWindow();
+    }
+  });
 }
 
 app.on("window-all-closed", app.quit);
