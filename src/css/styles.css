@@ -30,7 +30,6 @@ img {
 }
 
 label {
-  opacity: 0;
   top: 0;
   text-align: center;
   font-size: small;
@@ -38,12 +37,15 @@ label {
   color: rgb(235, 235, 235);
   background: rgba(0, 0, 0, 0.4);
   padding: 0.25rem;
-  width: 100%;
-  height: -webkit-fill-available;
+  width: fit-content;
+  height: fit-content;
   text-overflow: ellipsis;
   overflow: hidden;
   transition: opacity 0.05s ease-in-out;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
+  user-select: text;
+  -webkit-app-region: no-drag;
+  visibility: hidden;
 }
 
 #titlebar {
@@ -62,7 +64,9 @@ label {
 }
 
 #titlebar.win {
-  height: 30px;
+  height: 44px;
+  display: flex;
+  align-items: center;
 }
 
 #win-titlebar-btns {
@@ -70,19 +74,25 @@ label {
   display: flex;
   visibility: hidden;
   position: fixed;
-  top: 0px;
-  right: 0px;
+  gap: 4px;
+  top: 6px;
+  right: 6px;
+  button {
+    transition: background 0.05s ease-in-out;
+  }
 }
 
 #close-btn {
-  background: rgb(199, 13, 0);
+  background: rgba(199, 13, 0, 0.788);
   color: white;
+  border-radius: 6px;
 }
 
 #max-btn,
 #min-btn {
   background: none;
   color: rgb(255, 255, 255);
+  border-radius: 6px;
 }
 
 :focus {

@@ -193,9 +193,9 @@ if (sharedObj.filepath) {
             ));
           case "Space":
             e.preventDefault(); // keep Space from re-clicking a focused titlebar button
-            return label.style.opacity === "1"
-              ? (label.style.opacity = "0")
-              : (label.style.opacity = "1");
+            return label.style.visibility === "visible"
+              ? (label.style.visibility = "hidden")
+              : (label.style.visibility = "visible");
           case "Tab":
             e.preventDefault();
             return win.isMaximized() ? win.unmaximize() : win.maximize();
