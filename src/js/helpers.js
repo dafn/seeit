@@ -1,140 +1,153 @@
-const {
-  ALL_TYPES: TYPES_ALL,
-  ALL_VIDEO_TYPES: TYPES_VIDEO,
-} = require("./constants");
+const helper = (() => {
 
-const { pathToFileURL } = require("url");
+  const title = document.getElementById("title");
+  const label = document.getElementById("label");
+  const img = document.getElementById("image");
+  const vid = document.getElementById("video");
 
-let title = document.getElementById("title");
-let label = document.getElementById("label");
-let img = document.getElementById("image");
-let vid = document.getElementById("video");
-
-exports.transform = (value = 1, increment = 0.05) => {
-  let size = value,
-    rotation = 0;
-
-  return {
-    size: (size) => {
-      this.size = size;
-    },
-    up: () => {
-      size += increment;
-      vid.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`;
-      img.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`;
-    },
-    down: () => {
-      size -= increment;
-      vid.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`;
-      img.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`;
-    },
-    rotate: (direction) => {
-      if (img.style.visibility === "visible")
-        img.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${(rotation +=
-          90 * direction)}deg)`;
-      else
-        vid.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${(rotation +=
-          90 * direction)}deg)`;
-    },
-    reset: () => {
-      size = value;
+  const transform = (value = 1, increment = 0.05) => {
+    let size = value,
       rotation = 0;
 
-      img.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`;
-      img.style.height = "100%";
-      img.style.width = "100%";
-      img.style.top = "50%";
-      img.style.left = "50%";
+    return {
+      size: (size) => {
+        this.size = size;
+      },
+      up: () => {
+        size += increment;
+        vid.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`;
+        img.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`;
+      },
+      down: () => {
+        size -= increment;
+        vid.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`;
+        img.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`;
+      },
+      rotate: (direction) => {
+        if (img.style.visibility === "visible")
+          img.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${(rotation +=
+            90 * direction)}deg)`;
+        else
+          vid.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${(rotation +=
+            90 * direction)}deg)`;
+      },
+      reset: () => {
+        size = value;
+        rotation = 0;
 
-      vid.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`;
-      vid.style.height = "100%";
-      vid.style.width = "100%";
-      vid.style.top = "50%";
-      vid.style.left = "50%";
-    },
+        img.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`;
+        img.style.height = "100%";
+        img.style.width = "100%";
+        img.style.top = "50%";
+        img.style.left = "50%";
+
+        vid.style.transform = `translate(-50%, -50%) scale(${size}) rotate(${rotation}deg)`;
+        vid.style.height = "100%";
+        vid.style.width = "100%";
+        vid.style.top = "50%";
+        vid.style.left = "50%";
+      },
+    };
   };
-};
 
-exports.iterator = (array, index = 0) => {
-  nextIndex = index;
+  const iterator = (array, index = 0) => {
+    let nextIndex = index;
 
-  return {
-    next: () =>
-      array[(nextIndex = (nextIndex + array.length + 1) % array.length)],
-    prev: () =>
-      array[(nextIndex = (nextIndex + array.length - 1) % array.length)],
-    remove: async (file) => {
-      require("fs").rmSync(file, { recursive: true, force: true });
-      array.splice((nextIndex -= 1), 1);
-    },
+    return {
+      next: () =>
+        array[(nextIndex = (nextIndex + array.length + 1) % array.length)],
+      prev: () =>
+        array[(nextIndex = (nextIndex + array.length - 1) % array.length)],
+      size: () => array.length,
+      remove: async (file) => {
+        fs.rmSync(file);
+        array.splice(nextIndex, 1);
+        nextIndex -= 1;
+      },
+    };
   };
-};
 
-exports.iterate = (files, path, dirname, transform, direction) => {
-  do file = direction == 1 ? files.next() : files.prev();
-  while (TYPES_ALL.indexOf(path.extname(file).toLowerCase()) === -1);
+  const isSupported = (path, file) =>
+    ALL_TYPES.includes(path.extname(file).toLowerCase());
 
-  TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1
-    ? showVideo(`${dirname}${file}`, file)
-    : showImage(`${dirname}${file}`, file);
+  // Checks each file at most once, so a folder without supported files can't loop forever.
+  const findSupportedFile = (files, path, direction) => {
+    for (let checked = 0; checked < files.size(); checked++) {
+      const file = direction == 1 ? files.next() : files.prev();
+      if (isSupported(path, file)) return file;
+    }
+    return undefined;
+  };
 
-  transform.reset();
-  return file;
-};
+  const iterate = (files, path, dirname, transform, direction, current) => {
+    const file = findSupportedFile(files, path, direction);
+    if (!file) return current;
 
-exports.setWindowSize = (dim) => {
-  if (dim.ws > dim.wi && dim.hs > dim.hi) return { w: dim.wi, h: dim.hi };
+    ALL_VIDEO_TYPES.indexOf(path.extname(file).toLowerCase()) !== -1
+      ? showVideo(`${dirname}${file}`, file)
+      : showImage(`${dirname}${file}`, file);
 
-  return dim.wi / dim.hi < dim.ws / dim.hs
-    ? { w: (dim.wi * dim.hs) / dim.hi, h: dim.hs }
-    : { w: dim.ws, h: (dim.hi * dim.ws) / dim.wi };
-};
+    transform.reset();
+    return file;
+  };
 
-exports.move = (e) => {
-  let pos1 = 0,
-    pos2 = 0,
-    pos3 = 0,
-    pos4 = 0;
+  const setWindowSize = (dim) => {
+    if (dim.ws > dim.wi && dim.hs > dim.hi) return { w: dim.wi, h: dim.hi };
 
-  e.preventDefault();
-  pos3 = e.clientX;
-  pos4 = e.clientY;
+    return dim.wi / dim.hi < dim.ws / dim.hs
+      ? { w: (dim.wi * dim.hs) / dim.hi, h: dim.hs }
+      : { w: dim.ws, h: (dim.hi * dim.ws) / dim.wi };
+  };
 
-  document.onmousemove = (e) => {
+  const move = (e) => {
+    let pos1 = 0,
+      pos2 = 0,
+      pos3 = 0,
+      pos4 = 0;
+
     e.preventDefault();
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
     pos3 = e.clientX;
     pos4 = e.clientY;
-    img.style.top = img.offsetTop - pos2 + "px";
-    img.style.left = img.offsetLeft - pos1 + "px";
-    vid.style.top = img.offsetTop - pos2 + "px";
-    vid.style.left = img.offsetLeft - pos1 + "px";
+
+    document.onmousemove = (e) => {
+      e.preventDefault();
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      img.style.top = img.offsetTop - pos2 + "px";
+      img.style.left = img.offsetLeft - pos1 + "px";
+      vid.style.top = img.offsetTop - pos2 + "px";
+      vid.style.left = img.offsetLeft - pos1 + "px";
+    };
+
+    document.onmouseup = () => {
+      document.onmouseup = null;
+      document.onmousemove = null;
+    };
   };
 
-  document.onmouseup = () => {
-    document.onmouseup = null;
-    document.onmousemove = null;
+  const showVideo = (path, filename) => {
+    title.innerText = filename;
+    label.innerText = filename;
+
+    img.style.visibility = "hidden";
+    vid.src = pathToFileURL(path);
+    vid.style.visibility = "visible";
+    vid.style.zIndex = 1;
   };
-};
 
-showVideo = (path, filename) => {
-  title.innerText = filename;
-  label.innerText = filename;
+  const showImage = (path, filename) => {
+    title.innerText = filename;
+    label.innerText = filename;
 
-  img.style.visibility = "hidden";
-  vid.src = pathToFileURL(path).href;
-  vid.style.visibility = "visible";
-  vid.style.zIndex = 1;
-};
+    vid.style.visibility = "hidden";
+    img.src = pathToFileURL(path);
+    vid.style.zIndex = -1;
+    img.style.visibility = "visible";
+    vid.removeAttribute("src");
+    vid.load();
+  };
 
-showImage = (path, filename) => {
-  title.innerText = filename;
-  label.innerText = filename;
-
-  vid.style.visibility = "hidden";
-  img.src = pathToFileURL(path).href;
-  vid.style.zIndex = -1;
-  img.style.visibility = "visible";
-  vid.src = "";
-};
+  return { transform, iterator, iterate, setWindowSize, move };
+})();

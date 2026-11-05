@@ -1,14 +1,10 @@
 const ALL_VIDEO_TYPES = [
-  ".ogg",
   ".webm",
   ".mp4",
-  ".mkv",
-  ".avi",
+  ".m4v",
   ".mov",
-  ".flv",
-  ".wmv",
-  ".mpeg",
-  ".mpg",
+  ".ogv",
+  ".ogg",
 ];
 
 const ALL_IMAGE_TYPES = [
@@ -26,10 +22,17 @@ const ALL_IMAGE_TYPES = [
 
 const ALL_TYPES = [...ALL_IMAGE_TYPES, ...ALL_VIDEO_TYPES];
 
-const INDEX = process.env.NODE_ENV === "development" ? 2 : 1;
+const INDEX =
+  typeof process !== "undefined" && process.env.NODE_ENV === "development"
+    ? 2
+    : 1;
 
-module.exports = {
-  ALL_VIDEO_TYPES,
-  ALL_TYPES,
-  INDEX,
-};
+// CommonJS export for the main process; in the renderer (no `module`)
+// the consts above stay as globals shared by the classic scripts.
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = {
+    ALL_VIDEO_TYPES,
+    ALL_TYPES,
+    INDEX,
+  };
+}

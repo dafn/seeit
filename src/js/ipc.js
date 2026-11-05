@@ -1,17 +1,12 @@
-const { ipcRenderer } = require("electron");
-
-exports.initIpcRenderer = (ipc = "remote") => {
-  return {
-    show: () => ipcRenderer.sendSync(ipc, ["show"]),
-    close: () => ipcRenderer.sendSync(ipc, ["close"]),
-    center: () => ipcRenderer.sendSync(ipc, ["center"]),
-    setSize: (arg) => ipcRenderer.sendSync(ipc, ["setSize", ...arg]),
-    setMaximumSize: (arg) =>
-      ipcRenderer.sendSync(ipc, ["setMaximumSize", ...arg]),
-    maximize: () => ipcRenderer.sendSync(ipc, ["maximize"]),
-    isMaximized: () => ipcRenderer.sendSync(ipc, ["isMaximized"]),
-    unmaximize: () => ipcRenderer.sendSync(ipc, ["unmaximize"]),
-    filepath: () => ipcRenderer.sendSync(ipc, ["filepath"]),
-    platform: () => ipcRenderer.sendSync(ipc, ["platform"]),
-  };
-};
+const initIpcRenderer = () => ({
+  show: () => seeit.remote("show"),
+  close: () => seeit.remote("close"),
+  center: () => seeit.remote("center"),
+  setSize: (arg) => seeit.remote("setSize", ...arg),
+  setMaximumSize: (arg) => seeit.remote("setMaximumSize", ...arg),
+  maximize: () => seeit.remote("maximize"),
+  isMaximized: () => seeit.remote("isMaximized"),
+  unmaximize: () => seeit.remote("unmaximize"),
+  filepath: () => seeit.remote("filepath"),
+  platform: () => seeit.remote("platform"),
+});

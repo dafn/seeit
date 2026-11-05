@@ -1,16 +1,8 @@
-const { initIpcRenderer } = require("../js/ipc");
-
 const win = initIpcRenderer();
 const sharedObj = {
   filepath: win.filepath(),
   platform: win.platform(),
 };
-
-const path = require("path");
-const fs = require("fs");
-const helper = require("../js/helpers");
-const { pathToFileURL } = require("url");
-const { ALL_VIDEO_TYPES: TYPES_VIDEO } = require("../js/constants");
 
 const img = document.getElementById("image");
 const vid = document.getElementById("video");
@@ -48,11 +40,11 @@ if (sharedObj.platform == "win32") {
     );
 }
 
-if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
+if (ALL_VIDEO_TYPES.indexOf(path.extname(file).toLowerCase()) !== -1) {
   title.innerText = file;
   label.innerText = file;
 
-  vid.src = pathToFileURL(dirname + file).href;
+  vid.src = pathToFileURL(dirname + file);
   vid.style.visibility = "visible";
   vid.style.zIndex = "1";
 
@@ -60,7 +52,7 @@ if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
     if (first) {
       first = false;
 
-      size = helper.setWindowSize({
+      const size = helper.setWindowSize({
         wi: vid.videoWidth,
         hi: vid.videoHeight,
         ws: window.screen.availWidth,
@@ -80,14 +72,14 @@ if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
   title.innerText = file;
   label.innerText = file;
 
-  img.src = pathToFileURL(dirname + file).href;
+  img.src = pathToFileURL(dirname + file);
   img.style.visibility = "visible";
 
   img.onload = () => {
     if (first) {
       first = false;
 
-      size = helper.setWindowSize({
+      const size = helper.setWindowSize({
         wi: img.naturalWidth,
         hi: img.naturalHeight,
         ws: window.screen.availWidth,
@@ -104,26 +96,30 @@ if (TYPES_VIDEO.indexOf(path.extname(file).toLowerCase()) !== -1) {
     }
   };
 
-  img.onerror = (e) => {
+  vid.onerror = () => {
+    win.show();
     alert(`Error opening file: \n\n${dirname}${file}`);
-    // win.close();
+    win.close();
+  };
+
+  img.onerror = (e) => {
+    win.show();
+    alert(`Error opening file: \n\n${dirname}${file}`);
+    win.close();
   };
 }
 
 document.ondragover = (e) => e.preventDefault();
 document.ondrop = (e) => e.preventDefault();
-document.onmousewheel = (e) =>
-  e.wheelDelta > 0 ? transform.up() : transform.down();
+document.addEventListener("wheel", (e) =>
+  e.deltaY < 0 ? transform.up() : transform.down()
+);
 
 img.onmousedown = (e) => e.which === 1 && helper.move(e);
 vid.onmousedown = (e) => e.which === 1 && helper.move(e);
 
 fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
-  content.sort(
-    (a, b) =>
-      fs.statSync(dirname + "/" + b).mtime.getTime() -
-      fs.statSync(dirname + "/" + a).mtime.getTime()
-  );
+  content.sort((a, b) => fs.mtime(dirname + b) - fs.mtime(dirname + a));
 
   const files = helper.iterator(content, content.indexOf(file));
 
@@ -134,11 +130,11 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
       case "KeyD":
         return transform.rotate(1);
       case "ArrowRight":
-        return (file = helper.iterate(files, path, dirname, transform, 1));
+        return (file = helper.iterate(files, path, dirname, transform, 1, file));
       case "KeyA":
         return transform.rotate(-1);
       case "ArrowLeft":
-        return (file = helper.iterate(files, path, dirname, transform, -1));
+        return (file = helper.iterate(files, path, dirname, transform, -1, file));
       case "KeyW":
       case "ArrowUp":
         return transform.up();
@@ -148,7 +144,7 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
       case "Backspace":
       case "Delete":
         files.remove(`${dirname}${file}`);
-        return (file = helper.iterate(files, path, dirname, transform, 1));
+        return (file = helper.iterate(files, path, dirname, transform, 1, file));
       case "Space":
         return label.style.opacity === "1"
           ? (label.style.opacity = "0")
@@ -166,9 +162,9 @@ fs.readdir(path.dirname(sharedObj.filepath), (err, content) => {
   document.onmousedown = ({ button }) => {
     switch (button) {
       case 4:
-        return (file = helper.iterate(files, path, dirname, transform, -1));
+        return (file = helper.iterate(files, path, dirname, transform, -1, file));
       case 5:
-        return (file = helper.iterate(files, path, dirname, transform, 1));
+        return (file = helper.iterate(files, path, dirname, transform, 1, file));
     }
   };
 });

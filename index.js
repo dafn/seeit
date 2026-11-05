@@ -1,10 +1,15 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, nativeTheme } = require("electron");
+const path = require("path");
+const { pathToFileURL } = require("url");
+
 const { INDEX } = require("./src/js/constants");
 
 let windows = [];
 global.seeit = {};
 
-createWindow = (env) => {
+nativeTheme.themeSource = "dark";
+
+const createWindow = (env) => {
   if (process.platform == "win32" || process.env.NODE_ENV === "development") {
     global.seeit.filepath = process.argv[INDEX];
   }
@@ -15,13 +20,17 @@ createWindow = (env) => {
     autoHideMenuBar: true,
     frame: !process.platform == "win32",
     titleBarStyle: process.platform == "win32" ? "default" : "hidden",
-    darkTheme: true,
     backgroundColor: "#21252B",
     show: process.env.NODE_ENV === "development",
-    webPreferences: { nodeIntegration: true, contextIsolation: false },
+    webPreferences: {
+      preload: path.join(__dirname, "src/js/preload.js"),
+      nodeIntegration: false,
+      contextIsolation: true,
+      sandbox: false,
+    },
   });
 
-  window.loadURL(`file://${__dirname}/src/view/index.html`);
+  window.loadURL(pathToFileURL(path.join(__dirname, "src/view/index.html")).href);
 
   process.env.NODE_ENV === "development" && window.webContents.openDevTools();
 
@@ -44,6 +53,18 @@ if (process.platform == "darwin" && process.env.NODE_ENV !== "development") {
 
 app.on("window-all-closed", app.quit);
 
+const ALLOWED_COMMANDS = [
+  "show",
+  "close",
+  "minimize",
+  "maximize",
+  "unmaximize",
+  "isMaximized",
+  "center",
+  "setSize",
+  "setMaximumSize",
+];
+
 ipcMain.on(`remote`, (event, arg) => {
   const [command, ...args] = arg;
   const window = windows.find(
@@ -58,8 +79,10 @@ ipcMain.on(`remote`, (event, arg) => {
       event.returnValue = process.platform;
       break;
     default:
-      window[command](...args);
-      event.returnValue = null;
+      event.returnValue =
+        ALLOWED_COMMANDS.includes(command) && typeof window[command] === "function"
+          ? window[command](...args) ?? null
+          : null;
       break;
   }
 });
